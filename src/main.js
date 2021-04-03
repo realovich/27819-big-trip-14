@@ -15,7 +15,7 @@ const Place = {
   AFTEREND: 'afterend',
 };
 
-const render = (container, template, position) => {
+const render = (container, template, position = Place.BEFOREEND) => {
   container.insertAdjacentHTML(position, template);
 };
 
@@ -24,18 +24,18 @@ const tripNavigationElement = pageHeaderElement.querySelector('.trip-controls__n
 const tripMainElement = pageHeaderElement.querySelector('.trip-main');
 const tripFiltersELement = pageHeaderElement.querySelector('.trip-controls__filters');
 
-render(tripNavigationElement, createTripTabsTemplate(), Place.BEFOREEND);
+render(tripNavigationElement, createTripTabsTemplate());
 render(tripMainElement, createTripInfoTemplate(), Place.AFTERBEGIN);
-render(tripFiltersELement, createTripFiltersTemplate(), Place.BEFOREEND);
+render(tripFiltersELement, createTripFiltersTemplate());
 
 const tripEventsElement = document.querySelector('.trip-events');
 
-render(tripEventsElement, createTripEventsTemplate(), Place.BEFOREEND);
+render(tripEventsElement, createTripEventsTemplate());
 
 const tripEventsListElement = tripEventsElement.querySelector('.trip-events__list');
 
-render(tripEventsListElement, createPointEditTemplate(), Place.BEFOREEND);
-render(tripEventsListElement, createPointAddTemplate(), Place.BEFOREEND);
+render(tripEventsListElement, createPointAddTemplate(), Place.AFTERBEGIN);
+render(tripEventsListElement, createPointEditTemplate());
 
 const getPoints = (count) => {
   const points = [];
