@@ -13,9 +13,25 @@ export const createTripInfoTemplate = (points) => {
     allTripDates.push(dayjs(point.date_from).toISOString(), dayjs(point.date_to).toISOString());
   });
 
+  const allTripDestinations = new Set();
+
+  points.forEach((point) => {
+    allTripDestinations.add(point.destination.name);
+  });
+
+  const generateTitleTripDestinations = () => {
+    const allTripDestinationsArray = Array.from(allTripDestinations);
+
+    if (allTripDestinationsArray.length < 4) {
+      return allTripDestinationsArray.join(' &mdash; ');
+    }
+
+    return `${allTripDestinationsArray[0]} &mdash; ... &mdash; ${allTripDestinationsArray[allTripDestinationsArray.length - 1]}`;
+  };
+
   return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
-      <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
+      <h1 class="trip-info__title">${generateTitleTripDestinations()}</h1>
 
       <p class="trip-info__dates">${dayjs(allTripDates[0]).format('MMM DD')}&nbsp;&mdash;&nbsp;${dayjs(allTripDates[allTripDates.length - 1]).format('MMM DD')}</p>
     </div>
