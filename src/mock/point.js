@@ -153,6 +153,7 @@ export const generatePoint = () => {
     base_price: getRandomArrayElement(pointPrices),
     date_from: dateFrom,
     date_to: dateTo,
+    is_favorite: Boolean(getRandomInteger(0, 1)),
     type,
     offers: generatePointOffers(generateOffers(), type),
   };
