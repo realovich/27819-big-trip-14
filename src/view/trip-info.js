@@ -1,9 +1,6 @@
 export const createTripInfoTemplate = (points) => {
   const tripCost = points.reduce((sum, current) => {
-    let pointOffersCost = 0;
-    if (current.offers != []) {
-      pointOffersCost = current.offers.reduce((sumOffers, currentOffer) => sumOffers + currentOffer.price, 0);
-    }
+    const pointOffersCost = current.offers.reduce((sumOffers, currentOffer) => sumOffers + currentOffer.price, 0);
 
     return sum + current.price + pointOffersCost;
   }, 0);
