@@ -4,20 +4,14 @@ import {createTripFiltersTemplate} from './view/trip-filters';
 import {createTripEventsTemplate} from './view/trip-events';
 import {createPointEditTemplate} from './view/point-edit';
 import {createPointTemplate} from './view/point';
+import {RenderPlace} from './utils';
 import {generatePoint, generateOffers, pointDestinationNames} from './mock/point';
 
 const POINT_COUNT = 16;
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
-const Place = {
-  BEFOREBEGIN: 'beforebegin',
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-  AFTEREND: 'afterend',
-};
-
-const render = (container, template, position = Place.BEFOREEND) => {
+const render = (container, template, position = RenderPlace.BEFOREEND) => {
   container.insertAdjacentHTML(position, template);
 };
 
@@ -27,7 +21,7 @@ const tripMainElement = pageHeaderElement.querySelector('.trip-main');
 const tripFiltersELement = pageHeaderElement.querySelector('.trip-controls__filters');
 
 render(tripNavigationElement, createTripTabsTemplate());
-render(tripMainElement, createTripInfoTemplate(points), Place.AFTERBEGIN);
+render(tripMainElement, createTripInfoTemplate(points), RenderPlace.AFTERBEGIN);
 render(tripFiltersELement, createTripFiltersTemplate());
 
 const tripEventsElement = document.querySelector('.trip-events');
@@ -36,8 +30,8 @@ render(tripEventsElement, createTripEventsTemplate());
 
 const tripEventsListElement = tripEventsElement.querySelector('.trip-events__list');
 
-render(tripEventsListElement, createPointEditTemplate(points[0], generateOffers(), pointDestinationNames), Place.AFTERBEGIN);
+render(tripEventsListElement, createPointEditTemplate(points[0], generateOffers(), pointDestinationNames), RenderPlace.AFTERBEGIN);
 
 for (let i = 1; i < POINT_COUNT; i++) {
-  render(tripEventsListElement, createPointTemplate(points[i]), Place.BEFOREEND);
+  render(tripEventsListElement, createPointTemplate(points[i]));
 }

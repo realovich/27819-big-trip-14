@@ -30,3 +30,10 @@ export const calculateDuration = (dateFrom, dateTo) => {
 
   return `${days}D ${restOfHours}H ${restOfMinutes}M`;
 };
+
+export const RenderPlace = {
+  BEFOREBEGIN: 'beforebegin',
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+  AFTEREND: 'afterend',
+};
