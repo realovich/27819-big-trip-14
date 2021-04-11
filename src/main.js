@@ -27,7 +27,7 @@ const tripMainElement = pageHeaderElement.querySelector('.trip-main');
 const tripFiltersELement = pageHeaderElement.querySelector('.trip-controls__filters');
 
 render(tripNavigationElement, createTripTabsTemplate());
-render(tripMainElement, createTripInfoTemplate(), Place.AFTERBEGIN);
+render(tripMainElement, createTripInfoTemplate(points), Place.AFTERBEGIN);
 render(tripFiltersELement, createTripFiltersTemplate());
 
 const tripEventsElement = document.querySelector('.trip-events');
