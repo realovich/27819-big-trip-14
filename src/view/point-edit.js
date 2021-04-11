@@ -73,7 +73,7 @@ const createPointAddOffersTemplate = (offersOfType, pointOffers, pointType) => {
 export const createPointEditTemplate = (point = {}, offersOfType, destination) => {
 
   const {
-    price = '',
+    base_price = '',
     date_from = dayjs(),
     date_to = dayjs(),
     type = 'taxi',
@@ -124,7 +124,7 @@ export const createPointEditTemplate = (point = {}, offersOfType, destination) =
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${base_price}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>

@@ -150,7 +150,7 @@ export const generatePoint = () => {
   const type = getRandomArrayElement(types);
 
   return {
-    price: getRandomArrayElement(pointPrices),
+    base_price: getRandomArrayElement(pointPrices),
     date_from: dateFrom,
     date_to: dateTo,
     type,

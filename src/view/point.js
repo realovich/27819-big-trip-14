@@ -13,7 +13,7 @@ const createOffersListTemplate = (offers) => {
 };
 
 export const createPointTemplate = (point, destination) => {
-  const {type, price, offers, date_from, date_to} = point;
+  const {type, base_price, offers, date_from, date_to} = point;
 
   return `<li class="trip-events__item">
     <div class="event">
@@ -31,7 +31,7 @@ export const createPointTemplate = (point, destination) => {
         <p class="event__duration">${calculateDuration(date_from, date_to)}</p>
       </div>
       <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">${price}</span>
+        &euro;&nbsp;<span class="event__price-value">${base_price}</span>
       </p>
       ${createOffersListTemplate(offers)}
       <button class="event__favorite-btn event__favorite-btn--active" type="button">
