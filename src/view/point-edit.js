@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import {types} from '../mock/point';
 
-const createPointAddTypesTemplate = (selectedType) => {
+const createPointEditTypesTemplate = (selectedType) => {
 
   return types.map((pointType) => `<div class="event__type-item">
     <input id="event-type-${pointType.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType.toLowerCase()}"${selectedType === pointType ? ' checked' : ''}>
@@ -9,10 +9,8 @@ const createPointAddTypesTemplate = (selectedType) => {
   </div>`).join('');
 };
 
-const createPointAddDestinationListTemplate = () => {
-  const pointDestinations = ['Amsterdam', 'Chamonix', 'Geneva', 'Moscow', 'Paris'];
-
-  return pointDestinations.map((pointDestination) => `<option value="${pointDestination}"></option>`).join('');
+const createPointEditDestinationListTemplate = (destinations) => {
+  return destinations.map((pointDestination) => `<option value="${pointDestination}"></option>`).join('');
 };
 
 const createPointEditPhotosTemplate = (photos) => {
@@ -45,7 +43,7 @@ const createPointEditDestinationSectionTemplate = (destination) => {
   return '';
 };
 
-const createPointAddOffersTemplate = (offersOfType, pointOffers, pointType) => {
+const createPointEditOffersTemplate = (offersOfType, pointOffers, pointType) => {
   const offersOfTypeItem = offersOfType.find((item) => item.type === pointType);
 
   if (offersOfTypeItem) {
@@ -70,17 +68,16 @@ const createPointAddOffersTemplate = (offersOfType, pointOffers, pointType) => {
   return '';
 };
 
-export const createPointEditTemplate = (point = {}, offersOfType, destination) => {
+export const createPointEditTemplate = (point = {}, offersOfType, destinations) => {
 
   const {
     base_price = '',
     date_from = dayjs(),
     date_to = dayjs(),
+    destination = {},
     type = 'taxi',
     offers = [],
   } = point;
-
-  const typesTemplates = createPointAddTypesTemplate(type);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -96,7 +93,7 @@ export const createPointEditTemplate = (point = {}, offersOfType, destination) =
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
 
-              ${typesTemplates}
+              ${createPointEditTypesTemplate(type)}
             </fieldset>
           </div>
         </div>
@@ -107,7 +104,7 @@ export const createPointEditTemplate = (point = {}, offersOfType, destination) =
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination ? destination.name : ''}" list="destination-list-1">
           <datalist id="destination-list-1">
-            ${createPointAddDestinationListTemplate()}
+            ${createPointEditDestinationListTemplate(destinations)}
           </datalist>
         </div>
 
@@ -131,7 +128,7 @@ export const createPointEditTemplate = (point = {}, offersOfType, destination) =
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
       <section class="event__details">
-        ${createPointAddOffersTemplate(offersOfType, offers, type)}
+        ${createPointEditOffersTemplate(offersOfType, offers, type)}
 
         ${createPointEditDestinationSectionTemplate(destination)}
       </section>

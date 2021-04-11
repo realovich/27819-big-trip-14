@@ -12,8 +12,8 @@ const createOffersListTemplate = (offers) => {
   </ul>` : '';
 };
 
-export const createPointTemplate = (point, destination) => {
-  const {type, base_price, offers, date_from, date_to, is_favorite} = point;
+export const createPointTemplate = (point) => {
+  const {type, base_price, offers, date_from, date_to, destination, is_favorite} = point;
 
   const favoriteClassName = is_favorite ? ' event__favorite-btn--active' : '';
 

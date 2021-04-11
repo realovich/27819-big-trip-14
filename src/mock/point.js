@@ -9,11 +9,9 @@ const generateDate = () => {
   return dayjs().add(daysGap, 'minutes').toDate();
 };
 
-const pointDestinations = ['Amsterdam', 'Chamonix', 'Geneva', 'Moscow', 'Paris'];
-
 const pointPrices = [20, 50, 120, 160, 180, 600];
 
-const generatePointDescription = () => {
+const generatePointDestinationDescription = () => {
   const string = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus';
 
   const sentences = string.split('. ');
@@ -29,7 +27,7 @@ const generatePointDescription = () => {
   return destinationDescription.join('. ');
 };
 
-const generatePointPhotos = () => {
+const generatePointDestinationPhotos = () => {
   const numberOfPhotos = getRandomInteger(1, 5);
 
   const photos = [];
@@ -51,6 +49,8 @@ const generatePointOffers = (array, type) => {
 
   return [];
 };
+
+export const pointDestinationNames = ['Amsterdam', 'Chamonix', 'Geneva', 'Moscow', 'Paris'];
 
 export const types = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
@@ -138,9 +138,9 @@ export const generateOffers = () => {
 
 export const generateDestination = () => {
   return {
-    description: generatePointDescription(),
-    name: getRandomArrayElement(pointDestinations),
-    pictures: generatePointPhotos(),
+    description: generatePointDestinationDescription(),
+    name: getRandomArrayElement(pointDestinationNames),
+    pictures: generatePointDestinationPhotos(),
   };
 };
 
@@ -153,6 +153,7 @@ export const generatePoint = () => {
     base_price: getRandomArrayElement(pointPrices),
     date_from: dateFrom,
     date_to: dateTo,
+    destination: generateDestination(),
     is_favorite: Boolean(getRandomInteger(0, 1)),
     type,
     offers: generatePointOffers(generateOffers(), type),
