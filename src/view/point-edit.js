@@ -1,5 +1,15 @@
-import dayjs from 'dayjs';
+import {createElement} from '../utils';
+import {formatDate} from '../utils.js';
 import {types} from '../mock/point';
+
+const BLANK_POINT = {
+  base_price: '',
+  date_from: formatDate(),
+  date_to: formatDate(),
+  destination: null,
+  type: 'taxi',
+  offers: [],
+};
 
 const createPointEditTypesTemplate = (selectedType) => {
 
@@ -68,16 +78,9 @@ const createPointEditOffersTemplate = (offersOfType, pointOffers, pointType) => 
   return '';
 };
 
-export const createPointEditTemplate = (point = {}, offersOfType, destinations) => {
+const createPointEditTemplate = (point = {}, offersOfType, destinations) => {
 
-  const {
-    base_price = '',
-    date_from = dayjs(),
-    date_to = dayjs(),
-    destination = {},
-    type = 'taxi',
-    offers = [],
-  } = point;
+  const {base_price, date_from, date_to, destination, type, offers} = point;
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -110,10 +113,10 @@ export const createPointEditTemplate = (point = {}, offersOfType, destinations) 
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(date_from).format('DD/MM/YY HH:mm')}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(date_from, 'DD/MM/YY HH:mm')}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(date_to).format('DD/MM/YY HH:mm')}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(date_to, 'DD/MM/YY HH:mm')}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -135,3 +138,28 @@ export const createPointEditTemplate = (point = {}, offersOfType, destinations) 
     </form>
   </li>`;
 };
+
+export default class PointEdit {
+  constructor(point = BLANK_POINT, offers, destinationNames) {
+    this._point = point;
+    this._offers = offers;
+    this._destinationNames = destinationNames;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointEditTemplate(this._point, this._offers, this._destinationNames);
+  }
+
+  getElement() {
+    if(!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
