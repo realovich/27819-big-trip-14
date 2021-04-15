@@ -1,10 +1,11 @@
-import {createElement} from '../utils';
-import dayjs from 'dayjs';
+import {createElement, convertDateToISO, formatDate} from '../utils';
+
+const MAX_DESTINATIONS_COUNT = 3;
 
 const generateTitleTripDestinations = (setObject) => {
   const allTripDestinationsArray = Array.from(setObject);
 
-  if (allTripDestinationsArray.length < 4) {
+  if (allTripDestinationsArray.length <= MAX_DESTINATIONS_COUNT) {
     return allTripDestinationsArray.join(' &mdash; ');
   }
 
@@ -21,7 +22,7 @@ const createTripInfoTemplate = (points) => {
   const allTripDates = [];
 
   points.forEach((point) => {
-    allTripDates.push(dayjs(point.date_from).toISOString(), dayjs(point.date_to).toISOString());
+    allTripDates.push(convertDateToISO(point.date_from), convertDateToISO(point.date_to));
   });
 
   const allTripDestinations = new Set();
@@ -34,7 +35,7 @@ const createTripInfoTemplate = (points) => {
     <div class="trip-info__main">
       <h1 class="trip-info__title">${generateTitleTripDestinations(allTripDestinations)}</h1>
 
-      <p class="trip-info__dates">${dayjs(allTripDates[0]).format('MMM DD')}&nbsp;&mdash;&nbsp;${dayjs(allTripDates[allTripDates.length - 1]).format('MMM DD')}</p>
+      <p class="trip-info__dates">${formatDate(allTripDates[0], 'MMM DD')}&nbsp;&mdash;&nbsp;${formatDate(allTripDates[allTripDates.length - 1], 'MMM DD')}</p>
     </div>
 
     <p class="trip-info__cost">

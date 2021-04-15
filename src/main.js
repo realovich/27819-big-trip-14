@@ -34,27 +34,27 @@ const pointListComponent = new PointListView();
 render(tripEventsComponent.getElement(), pointListComponent.getElement());
 
 const renderPoint = (pointListElement, point) => {
-  const pointComponent = new PointView(point);
-  const pointEditComponent = new PointEditView(point, generateOffers(), pointDestinationNames);
+  const pointComponentElement = new PointView(point).getElement();
+  const pointEditComponentElement = new PointEditView(point, generateOffers(), pointDestinationNames).getElement();
 
   const replaceCardToForm = () => {
-    pointListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+    pointListElement.replaceChild(pointEditComponentElement, pointComponentElement);
   };
 
   const replaceFormToCard = () => {
-    pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+    pointListElement.replaceChild(pointComponentElement, pointEditComponentElement);
   };
 
-  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointComponentElement.querySelector('.event__rollup-btn').addEventListener('click', () => {
     replaceCardToForm();
   });
 
-  pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
+  pointEditComponentElement.querySelector('form').addEventListener('submit', (evt) => {
     evt.preventDefault();
     replaceFormToCard();
   });
 
-  render(pointListElement, pointComponent.getElement());
+  render(pointListElement, pointComponentElement);
 };
 
 for (let i = 1; i < POINT_COUNT; i++) {

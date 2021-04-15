@@ -1,11 +1,11 @@
 import {createElement} from '../utils';
-import {formatDate} from '../utils.js';
+import {formatDate, currentDate} from '../utils.js';
 import {types} from '../mock/point';
 
 const BLANK_POINT = {
   base_price: '',
-  date_from: formatDate(),
-  date_to: formatDate(),
+  date_from: currentDate(),
+  date_to: currentDate(),
   destination: null,
   type: 'taxi',
   offers: [],
@@ -24,58 +24,63 @@ const createPointEditDestinationListTemplate = (destinations) => {
 };
 
 const createPointEditPhotosTemplate = (photos) => {
-  if (photos.length != 0) {
-    const photosList = photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('');
-
-    return `<div class="event__photos-container">
-      <div class="event__photos-tape">
-        ${photosList}
-      </div>
-    </div>`;
+  if (photos.length === 0) {
+    return '';
   }
 
-  return '';
+  const photosList = photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('');
+
+  return `<div class="event__photos-container">
+    <div class="event__photos-tape">
+      ${photosList}
+    </div>
+  </div>`;
 };
 
 const createPointEditDestinationSectionTemplate = (destination) => {
 
-  if (destination) {
-    const photosTemplates = createPointEditPhotosTemplate(destination.pictures);
-
-    return `<section class="event__section  event__section--destination">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${destination.description}</p>
-
-      ${photosTemplates}
-    </section>`;
+  if (destination === null) {
+    return '';
   }
 
-  return '';
+  const photosTemplates = createPointEditPhotosTemplate(destination.pictures);
+
+  return `<section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${destination.description}</p>
+
+    ${photosTemplates}
+  </section>`;
 };
 
 const createPointEditOffersTemplate = (offersOfType, pointOffers, pointType) => {
-  const offersOfTypeItem = offersOfType.find((item) => item.type === pointType);
 
-  if (offersOfTypeItem) {
-    const createPointAddOffersListTemplate = offersOfTypeItem.offers.map((offer) => `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.shortname}" type="checkbox" name="event-offer-${offer.shortname}" ${pointOffers.some((pointOffer) => pointOffer.shortname == offer.shortname) && 'checked'}>
-      <label class="event__offer-label" for="event-offer-${offer.shortname}">
-        <span class="event__offer-title">${offer.title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer.price}</span>
-      </label>
-    </div>`).join('');
-
-    return `<section class="event__section  event__section--offers">
-      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-      <div class="event__available-offers">
-        ${createPointAddOffersListTemplate}
-      </div>
-    </section>`;
+  if (offersOfType.length === 0) {
+    return '';
   }
 
-  return '';
+  const offersOfTypeItem = offersOfType.find((item) => item.type === pointType);
+
+  if (!offersOfTypeItem) {
+    return '';
+  }
+
+  const createPointAddOffersListTemplate = offersOfTypeItem.offers.map((offer) => `<div class="event__offer-selector">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.shortname}" type="checkbox" name="event-offer-${offer.shortname}" ${pointOffers.some((pointOffer) => pointOffer.shortname == offer.shortname) && 'checked'}>
+    <label class="event__offer-label" for="event-offer-${offer.shortname}">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </label>
+  </div>`).join('');
+
+  return `<section class="event__section  event__section--offers">
+    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+    <div class="event__available-offers">
+      ${createPointAddOffersListTemplate}
+    </div>
+  </section>`;
 };
 
 const createPointEditTemplate = (point = {}, offersOfType, destinations) => {
