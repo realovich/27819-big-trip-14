@@ -1,5 +1,26 @@
-// Функция из интернета по генерации случайного числа из диапазона
-// Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
+import dayjs from 'dayjs';
+
+const MILLISECONDS_PER_SECOND = 1000;
+const SECONDS_PER_MINUTE = 60;
+const MINUTES_PER_HOUR = 60;
+const HOURS_PER_DAY = 24;
+
+export const formatDate = (date, format) => {
+  if (!date || !format) {
+    return null;
+  }
+
+  return dayjs(date).format(format);
+};
+
+export const currentDate = () => {
+  return dayjs();
+};
+
+export const convertDateToISO = (date) => {
+  return dayjs(date).toISOString();
+};
+
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -15,16 +36,16 @@ export const getRandomArrayElement = (array) => {
 
 export const calculateDuration = (dateFrom, dateTo) => {
   const duration = (dateTo - dateFrom);
-  const minutes = (duration / (1000 * 60)).toFixed(0);
-  const hours = (duration / (1000 * 60 * 60)).toFixed(0);
-  const days = (duration / (1000 * 60 * 60 * 24)).toFixed(0);
+  const minutes = (duration / (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE)).toFixed(0);
+  const hours = (duration / (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE * MINUTES_PER_HOUR)).toFixed(0);
+  const days = (duration / (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE * MINUTES_PER_HOUR * HOURS_PER_DAY)).toFixed(0);
 
-  const restOfHours = hours % 24;
-  const restOfMinutes = minutes % 60;
+  const restOfHours = hours % HOURS_PER_DAY;
+  const restOfMinutes = minutes % MINUTES_PER_HOUR;
 
-  if (minutes < 60) {
+  if (minutes < MINUTES_PER_HOUR) {
     return `${minutes}M`;
-  } else if (hours < 24) {
+  } else if (hours < HOURS_PER_DAY) {
     return `${hours}H ${restOfMinutes}M`;
   }
 
@@ -36,4 +57,22 @@ export const RenderPlace = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
   AFTEREND: 'afterend',
+};
+
+export const render = (container, element, place = RenderPlace.BEFOREEND) => {
+  switch (place) {
+    case RenderPlace.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPlace.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
 };

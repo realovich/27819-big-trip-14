@@ -1,19 +1,16 @@
 import {createElement} from '../utils';
 
-const createTripEventsTemplate = () => {
-  return `<section class="trip-events">
-    <h2 class="visually-hidden">Trip events</h2>
-
-  </section>`;
+const createPointListTemplate = () => {
+  return '<ul class="trip-events__list"></ul>';
 };
 
-export default class TripEvents {
+export default class PointList {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createTripEventsTemplate();
+    return createPointListTemplate();
   }
 
   getElement() {
