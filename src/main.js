@@ -68,20 +68,21 @@ const renderPoint = (pointListElement, point) => {
 
 const renderTripSection = (tripSectionContainer, tripSectionPoints) => {
   const tripSectionComponentElement = new TripSectionView().getElement();
-  const pointListComponent = new PointListView();
 
   render(tripSectionContainer, tripSectionComponentElement);
-  render(tripSectionComponentElement, pointListComponent.getElement());
 
   if (tripSectionPoints.length === 0) {
     render(tripSectionComponentElement, new NoPointView().getElement());
     return;
   }
 
+  const pointListComponentElement = new PointListView().getElement();
+
   render(tripSectionComponentElement, new SortView().getElement());
+  render(tripSectionComponentElement, pointListComponentElement);
 
   for (let i = 1; i < POINT_COUNT; i++) {
-    renderPoint(pointListComponent.getElement(), tripSectionPoints[i]);
+    renderPoint(pointListComponentElement, tripSectionPoints[i]);
   }
 };
 
