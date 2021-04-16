@@ -13,6 +13,10 @@ const generateTitleTripDestinations = (setObject) => {
 };
 
 const createTripInfoTemplate = (points) => {
+  if (points.length === 0) {
+    return ' ';
+  }
+
   const tripCost = points.reduce((sum, current) => {
     const pointOffersCost = current.offers.reduce((sumOffers, currentOffer) => sumOffers + currentOffer.price, 0);
 
