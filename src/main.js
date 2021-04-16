@@ -10,7 +10,7 @@ import NoPointView from './view/no-point';
 import {RenderPlace, Evt, render} from './utils';
 import {generatePoint, generateOffers, pointDestinationNames} from './mock/point';
 
-const POINT_COUNT = 0;
+const POINT_COUNT = 20;
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
