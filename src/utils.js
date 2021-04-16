@@ -59,6 +59,12 @@ export const RenderPlace = {
   AFTEREND: 'afterend',
 };
 
+export const Evt = {
+  CLICK: 'click',
+  KEYDOWN: 'keydown',
+  SUBMIT: 'submit',
+};
+
 export const render = (container, element, place = RenderPlace.BEFOREEND) => {
   switch (place) {
     case RenderPlace.AFTERBEGIN:
