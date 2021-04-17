@@ -13,7 +13,6 @@ const BLANK_POINT = {
 };
 
 const createPointEditTypesTemplate = (selectedType) => {
-
   return types.map((pointType) => `<div class="event__type-item">
     <input id="event-type-${pointType.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType.toLowerCase()}"${selectedType === pointType ? ' checked' : ''}>
     <label class="event__type-label  event__type-label--${pointType.toLowerCase()}" for="event-type-${pointType.toLowerCase()}-1">${pointType}</label>
@@ -39,7 +38,6 @@ const createPointEditPhotosTemplate = (photos) => {
 };
 
 const createPointEditDestinationSectionTemplate = (destination) => {
-
   if (destination === null) {
     return '';
   }
@@ -55,7 +53,6 @@ const createPointEditDestinationSectionTemplate = (destination) => {
 };
 
 const createPointEditOffersTemplate = (offersOfType, pointOffers, pointType) => {
-
   if (offersOfType.length === 0) {
     return '';
   }
@@ -85,7 +82,6 @@ const createPointEditOffersTemplate = (offersOfType, pointOffers, pointType) => 
 };
 
 const createPointEditTemplate = (point = {}, offersOfType, destinations) => {
-
   const {base_price, date_from, date_to, destination, type, offers} = point;
 
   return `<li class="trip-events__item">
