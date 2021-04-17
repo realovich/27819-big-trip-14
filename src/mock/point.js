@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {getRandomInteger, getRandomArrayElement} from '../utils.js';
+import {getRandomInteger, getRandomArrayElement} from '../utils/common';
 
 const generateDate = () => {
   const minMinutesGap = 4;

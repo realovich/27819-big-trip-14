@@ -1,4 +1,4 @@
-import SiteTabsView from './view/trip-tabs';
+import SiteTabsView from './view/site-tabs';
 import TripInfoView from './view/trip-info';
 import FilterView from './view/filter';
 import TripSectionView from './view/trip-section';
@@ -7,7 +7,8 @@ import PointListView from './view/point-list';
 import PointEditView from './view/point-edit';
 import PointView from './view/point';
 import NoPointView from './view/no-point';
-import {RenderPlace, Evt, render} from './utils';
+import {RenderPlace, render, replace} from './utils/render';
+import {Key, Evt} from './utils/common';
 import {generatePoint, generateOffers, pointDestinationNames} from './mock/point';
 
 const POINT_COUNT = 20;
@@ -20,69 +21,65 @@ const tripNavigationElement = pageHeaderElement.querySelector('.trip-controls__n
 const tripMainElement = pageHeaderElement.querySelector('.trip-main');
 const tripFiltersELement = pageHeaderElement.querySelector('.trip-controls__filters');
 
-render(tripNavigationElement, new SiteTabsView().getElement());
-render(tripMainElement, new TripInfoView(points).getElement(), RenderPlace.AFTERBEGIN);
-render(tripFiltersELement, new FilterView().getElement());
+render(tripNavigationElement, new SiteTabsView());
+render(tripMainElement, new TripInfoView(points), RenderPlace.AFTERBEGIN);
+render(tripFiltersELement, new FilterView());
 
 const pageBodyContainerElement = pageMainElement.querySelector('.page-body__container');
 
 const renderPoint = (pointListElement, point) => {
-  const pointComponentElement = new PointView(point).getElement();
-  const pointEditComponentElement = new PointEditView(point, generateOffers(), pointDestinationNames).getElement();
+  const pointComponent = new PointView(point);
+  const pointEditComponent = new PointEditView(point, generateOffers(), pointDestinationNames);
 
   const replaceCardToForm = () => {
-    pointListElement.replaceChild(pointEditComponentElement, pointComponentElement);
+    replace(pointEditComponent, pointComponent);
   };
 
   const replaceFormToCard = () => {
-    pointListElement.replaceChild(pointComponentElement, pointEditComponentElement);
+    replace(pointComponent, pointEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape' || evt.key == 'Esc') {
+    if (evt.key === Key.ESCAPE || evt.key == Key.ESC) {
       evt.preventDefault();
       replaceFormToCard();
       document.removeEventListener(Evt.KEYDOWN, onEscKeyDown);
     }
   };
 
-  const rollupBtnClass = '.event__rollup-btn';
-
-  const closePointEditCard = (evt) => {
-    evt.preventDefault();
+  const closePointEditCard = () => {
     replaceFormToCard();
     document.removeEventListener(Evt.KEYDOWN, onEscKeyDown);
   };
 
-  pointComponentElement.querySelector(rollupBtnClass).addEventListener(Evt.CLICK, () => {
+  pointComponent.setEditClickHandler(() => {
     replaceCardToForm();
     document.addEventListener(Evt.KEYDOWN, onEscKeyDown);
   });
 
-  pointEditComponentElement.querySelector(rollupBtnClass).addEventListener(Evt.CLICK, (evt) => closePointEditCard(evt));
+  pointEditComponent.setCloseEditClickHandler(() => closePointEditCard());
+  pointEditComponent.setFormSubmitHandler(() => closePointEditCard());
 
-  pointEditComponentElement.querySelector('form').addEventListener(Evt.SUBMIT, (evt) => closePointEditCard(evt));
-
-  render(pointListElement, pointComponentElement);
+  render(pointListElement, pointComponent);
 };
 
 const renderTripSection = (tripSectionContainer, tripSectionPoints) => {
-  const tripSectionComponentElement = new TripSectionView().getElement();
+  const tripSectionComponent = new  TripSectionView();
 
-  render(tripSectionContainer, tripSectionComponentElement);
+  render(tripSectionContainer, tripSectionComponent);
 
   if (tripSectionPoints.length === 0) {
-    render(tripSectionComponentElement, new NoPointView().getElement());
+    render(tripSectionComponent, new NoPointView());
     return;
   }
 
-  const pointListComponentElement = new PointListView().getElement();
+  const pointListComponent = new PointListView();
 
-  render(tripSectionComponentElement, new SortView().getElement());
-  render(tripSectionComponentElement, pointListComponentElement);
+  render(tripSectionComponent, new SortView());
+  render(tripSectionComponent, pointListComponent);
 
   for (let i = 1; i < POINT_COUNT; i++) {
-    renderPoint(pointListComponentElement, tripSectionPoints[i]);
+    renderPoint(pointListComponent, tripSectionPoints[i]);
   }
 };
 
