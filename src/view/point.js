@@ -1,5 +1,6 @@
-import {createElement} from '../utils';
-import {calculateDuration, formatDate} from '../utils.js';
+import AbstractView from './abstract';
+import {Evt} from '../utils/common';
+import {calculateDuration, formatDate} from '../utils/date';
 
 const createOffersListTemplate = (offers) => {
   if (offers.length === 0) {
@@ -53,25 +54,25 @@ const createPointTemplate = (point) => {
   </li>`;
 };
 
-export default class Point {
+export default class Point extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
+
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
     return createPointTemplate(this._point);
   }
 
-  getElement() {
-    if(!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener(Evt.CLICK, this._editClickHandler);
   }
 }

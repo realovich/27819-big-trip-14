@@ -1,5 +1,6 @@
-import {createElement} from '../utils';
-import {formatDate, currentDate} from '../utils.js';
+import AbstractView from './abstract';
+import {Evt} from '../utils/common';
+import {formatDate, currentDate} from '../utils/date';
 import {types} from '../mock/point';
 
 const BLANK_POINT = {
@@ -12,7 +13,6 @@ const BLANK_POINT = {
 };
 
 const createPointEditTypesTemplate = (selectedType) => {
-
   return types.map((pointType) => `<div class="event__type-item">
     <input id="event-type-${pointType.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType.toLowerCase()}"${selectedType === pointType ? ' checked' : ''}>
     <label class="event__type-label  event__type-label--${pointType.toLowerCase()}" for="event-type-${pointType.toLowerCase()}-1">${pointType}</label>
@@ -38,7 +38,6 @@ const createPointEditPhotosTemplate = (photos) => {
 };
 
 const createPointEditDestinationSectionTemplate = (destination) => {
-
   if (destination === null) {
     return '';
   }
@@ -54,7 +53,6 @@ const createPointEditDestinationSectionTemplate = (destination) => {
 };
 
 const createPointEditOffersTemplate = (offersOfType, pointOffers, pointType) => {
-
   if (offersOfType.length === 0) {
     return '';
   }
@@ -84,7 +82,6 @@ const createPointEditOffersTemplate = (offersOfType, pointOffers, pointType) => 
 };
 
 const createPointEditTemplate = (point = {}, offersOfType, destinations) => {
-
   const {base_price, date_from, date_to, destination, type, offers} = point;
 
   return `<li class="trip-events__item">
@@ -147,27 +144,37 @@ const createPointEditTemplate = (point = {}, offersOfType, destinations) => {
   </li>`;
 };
 
-export default class PointEdit {
+export default class PointEdit extends AbstractView {
   constructor(point = BLANK_POINT, offers, destinationNames) {
+    super();
     this._point = point;
     this._offers = offers;
     this._destinationNames = destinationNames;
-    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._closeEditClickHandler = this._closeEditClickHandler.bind(this);
   }
 
   getTemplate() {
     return createPointEditTemplate(this._point, this._offers, this._destinationNames);
   }
 
-  getElement() {
-    if(!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  _closeEditClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeEditClick();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener(Evt.SUBMIT, this._formSubmitHandler);
+  }
+
+  setCloseEditClickHandler(callback) {
+    this._callback.closeEditClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener(Evt.CLICK, this._closeEditClickHandler);
   }
 }
