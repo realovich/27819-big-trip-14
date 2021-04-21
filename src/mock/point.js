@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 import {getRandomInteger, getRandomArrayElement} from '../utils/common';
 
 const generateDate = () => {
@@ -150,6 +151,7 @@ export const generatePoint = () => {
   const type = getRandomArrayElement(types);
 
   return {
+    id: nanoid(),
     base_price: getRandomArrayElement(pointPrices),
     date_from: dateFrom,
     date_to: dateTo,
