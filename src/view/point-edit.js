@@ -1,4 +1,4 @@
-import AbstractView from './abstract';
+import SmartView from './smart';
 import {Evt} from '../utils/common';
 import {formatDate, currentDate} from '../utils/date';
 import {types} from '../mock/point';
@@ -14,8 +14,8 @@ const BLANK_POINT = {
 
 const createPointEditTypesTemplate = (selectedType) => {
   return types.map((pointType) => `<div class="event__type-item">
-    <input id="event-type-${pointType.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType.toLowerCase()}"${selectedType === pointType ? ' checked' : ''}>
-    <label class="event__type-label  event__type-label--${pointType.toLowerCase()}" for="event-type-${pointType.toLowerCase()}-1">${pointType}</label>
+    <input id="event-type-${pointType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}"${selectedType === pointType ? ' checked' : ''}>
+    <label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}-1">${pointType}</label>
   </div>`).join('');
 };
 
@@ -144,7 +144,7 @@ const createPointEditTemplate = (point = {}, offersOfType, destinations) => {
   </li>`;
 };
 
-export default class PointEdit extends AbstractView {
+export default class PointEdit extends SmartView {
   constructor(point = BLANK_POINT, offers, destinationNames) {
     super();
     this._point = point;
