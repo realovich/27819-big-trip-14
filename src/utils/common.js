@@ -7,6 +7,7 @@ export const Evt = {
   CLICK: 'click',
   KEYDOWN: 'keydown',
   SUBMIT: 'submit',
+  CHANGE: 'change',
 };
 
 export const getRandomInteger = (a = 0, b = 1) => {

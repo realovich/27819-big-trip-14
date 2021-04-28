@@ -20,7 +20,7 @@ const createPointEditTypesTemplate = (selectedType) => {
 };
 
 const createPointEditDestinationListTemplate = (destinations) => {
-  return destinations.map((pointDestination) => `<option value="${pointDestination}"></option>`).join('');
+  return destinations.map((pointDestination) => `<option value="${pointDestination.name}"></option>`).join('');
 };
 
 const createPointEditPhotosTemplate = (photos) => {
@@ -145,22 +145,55 @@ const createPointEditTemplate = (point = {}, offersOfType, destinations) => {
 };
 
 export default class PointEdit extends SmartView {
-  constructor(point = BLANK_POINT, offers, destinationNames) {
+  constructor(point = BLANK_POINT, offers, destinations) {
     super();
-    this._point = point;
+    this._data = point;
     this._offers = offers;
-    this._destinationNames = destinationNames;
+    this._destinations = destinations;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._closeEditClickHandler = this._closeEditClickHandler.bind(this);
+    this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
+    this._eventDestinationChangeHandler = this._eventDestinationChangeHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._point, this._offers, this._destinationNames);
+    return createPointEditTemplate(this._data, this._offers, this._destinations);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setCloseEditClickHandler(this._callback.closeEditClick);
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector('.event__type-group').addEventListener(Evt.CHANGE, this._eventTypeChangeHandler);
+    this.getElement().querySelector('.event__input--destination').addEventListener(Evt.CHANGE, this._eventDestinationChangeHandler);
+  }
+
+  _eventTypeChangeHandler(evt) {
+    evt.preventDefault();
+
+    this.updateData({
+      type: evt.target.value,
+    });
+  }
+
+  _eventDestinationChangeHandler(evt) {
+    evt.preventDefault();
+
+    const currentDestination = this._destinations.find((destination) => destination.name === evt.target.value);
+
+    this.updateData({
+      destination: currentDestination,
+    });
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(this._data);
   }
 
   _closeEditClickHandler(evt) {
