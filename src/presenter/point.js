@@ -2,7 +2,7 @@ import PointView from '../view/point';
 import PointEditView from '../view/point-edit';
 import {render, replace, remove} from '../utils/render';
 import {Key, Evt} from '../utils/common';
-import {generateOffers, pointDestinationNames} from '../mock/point';
+import {generateOffers, generateDestinations} from '../mock/point';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -33,7 +33,7 @@ export default class Point {
     const prevPointEditComponent = this._pointEditComponent;
 
     this._pointComponent = new PointView(point);
-    this._pointEditComponent = new PointEditView(point, generateOffers(), pointDestinationNames);
+    this._pointEditComponent = new PointEditView(point, generateOffers(), generateDestinations());
 
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointComponent.setEditClickHandler(this._handleEditClick);

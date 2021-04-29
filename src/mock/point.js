@@ -53,6 +53,20 @@ const generatePointOffers = (array, type) => {
 
 export const pointDestinationNames = ['Amsterdam', 'Chamonix', 'Geneva', 'Moscow', 'Paris'];
 
+export const generateDestinations = () => {
+  const destinations = [];
+
+  pointDestinationNames.forEach((destinationName) => {
+    destinations.push({
+      name: destinationName,
+      description: generatePointDestinationDescription(),
+      pictures: generatePointDestinationPhotos(),
+    });
+  });
+
+  return destinations;
+};
+
 export const types = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 export const generateOffers = () => {
@@ -137,14 +151,6 @@ export const generateOffers = () => {
   return offers;
 };
 
-export const generateDestination = () => {
-  return {
-    description: generatePointDestinationDescription(),
-    name: getRandomArrayElement(pointDestinationNames),
-    pictures: generatePointDestinationPhotos(),
-  };
-};
-
 export const generatePoint = () => {
   const dateFrom = dayjs();
   const dateTo = generateDate();
@@ -155,7 +161,7 @@ export const generatePoint = () => {
     base_price: getRandomArrayElement(pointPrices),
     date_from: dateFrom,
     date_to: dateTo,
-    destination: generateDestination(),
+    destination: getRandomArrayElement(generateDestinations()),
     is_favorite: Boolean(getRandomInteger(0, 1)),
     type,
     offers: generatePointOffers(generateOffers(), type),
