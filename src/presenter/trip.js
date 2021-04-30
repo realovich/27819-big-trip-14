@@ -3,7 +3,8 @@ import SortView from '../view/sort';
 import PointListView from '../view/point-list';
 import NoPointView from '../view/no-point';
 import {render} from '../utils/render';
-import {updateItem, SortType, sortPointDay, sortPointPrice, sortPointTime} from '../utils/common.js';
+import {updateItem} from '../utils/common.js';
+import {SortType, sortPointDay, sortPointPrice, sortPointTime} from '../utils/point';
 import PointPresenter from './point';
 
 const POINT_COUNT = 20;
