@@ -82,7 +82,7 @@ export default class Trip {
   }
 
   _renderPoints() {
-    for (let i = 1; i < POINT_COUNT; i++) {
+    for (let i = 0; i < POINT_COUNT; i++) {
       this._renderPoint(this._tripPoints[i]);
     }
   }
