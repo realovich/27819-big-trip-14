@@ -153,7 +153,8 @@ export default class PointEdit extends SmartView {
     this._data = point;
     this._offers = offers;
     this._destinations = destinations;
-    this._datepicker = null;
+    this._dateFromPicker = null;
+    this._dateToPicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._closeEditClickHandler = this._closeEditClickHandler.bind(this);
@@ -180,12 +181,7 @@ export default class PointEdit extends SmartView {
   }
 
   _getDatepickerInstance(element, date, callback) {
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
-    }
-
-    this._datepicker = flatpickr(
+    return flatpickr(
       this.getElement().querySelector(element),
       {
         enableTime: true,
@@ -197,11 +193,21 @@ export default class PointEdit extends SmartView {
   }
 
   _dateFromInstance() {
-    this._getDatepickerInstance('#event-start-time-1', this._data.date_from, this._dateFromChangeHandler);
+    if (this._dateFromPicker) {
+      this._dateFromPicker.destroy();
+      this._dateFromPicker = null;
+    }
+
+    this._dateFromPicker = this._getDatepickerInstance('#event-start-time-1', this._data.date_from, this._dateFromChangeHandler);
   }
 
   _dateToInstance() {
-    this._getDatepickerInstance('#event-end-time-1', this._data.date_to, this._dateToChangeHandler);
+    if (this._dateToPicker) {
+      this._dateToPicker.destroy();
+      this._dateToPicker = null;
+    }
+
+    this._dateToPicker = this._getDatepickerInstance('#event-end-time-1', this._data.date_to, this._dateToChangeHandler);
   }
 
   _setInnerHandlers() {
