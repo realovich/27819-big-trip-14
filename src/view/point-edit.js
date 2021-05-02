@@ -186,6 +186,10 @@ export default class PointEdit extends SmartView {
 
     const currentDestination = this._destinations.find((destination) => destination.name === evt.target.value);
 
+    if (!currentDestination) {
+      return;
+    }
+
     this.updateData({
       destination: currentDestination,
     });

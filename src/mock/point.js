@@ -2,7 +2,15 @@ import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 import {getRandomInteger, getRandomArrayElement} from '../utils/common';
 
-const generateDate = () => {
+const generateDateFrom = () => {
+  const minMinutesGap = 4;
+  const maxMinutesGap = 4 * 24 * 60;
+  const daysGap = getRandomInteger(minMinutesGap, maxMinutesGap);
+
+  return dayjs().subtract(daysGap, 'minutes').toDate();
+};
+
+const generateDateTo = () => {
   const minMinutesGap = 4;
   const maxMinutesGap = 4 * 24 * 60;
   const daysGap = getRandomInteger(minMinutesGap, maxMinutesGap);
@@ -152,8 +160,8 @@ export const generateOffers = () => {
 };
 
 export const generatePoint = () => {
-  const dateFrom = dayjs();
-  const dateTo = generateDate();
+  const dateFrom = generateDateFrom();
+  const dateTo = generateDateTo();
   const type = getRandomArrayElement(types);
 
   return {
