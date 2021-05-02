@@ -159,10 +159,12 @@ export default class PointEdit extends SmartView {
     this._closeEditClickHandler = this._closeEditClickHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._eventDestinationChangeHandler = this._eventDestinationChangeHandler.bind(this);
-    this._dateChangeHandler = this._dateChangeHandler.bind(this);
+    this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
+    this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
 
     this._setInnerHandlers();
-    this._setDatepicker();
+    this._dateFromInstance();
+    this._dateToInstance();
   }
 
   getTemplate() {
@@ -171,26 +173,35 @@ export default class PointEdit extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this._setDatepicker();
+    this._dateFromInstance();
+    this._dateToInstance();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setCloseEditClickHandler(this._callback.closeEditClick);
   }
 
-  _setDatepicker() {
+  _getDatepickerInstance(element, date, callback) {
     if (this._datepicker) {
       this._datepicker.destroy();
       this._datepicker = null;
     }
 
     this._datepicker = flatpickr(
-      this.getElement().querySelector('#event-start-time-1'),
+      this.getElement().querySelector(element),
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._data.date_from,
-        onChange: this._dateChangeHandler,
+        defaultDate: date,
+        onChange: callback,
       },
     );
+  }
+
+  _dateFromInstance() {
+    this._getDatepickerInstance('#event-start-time-1', this._data.date_from, this._dateFromChangeHandler);
+  }
+
+  _dateToInstance() {
+    this._getDatepickerInstance('#event-end-time-1', this._data.date_to, this._dateToChangeHandler);
   }
 
   _setInnerHandlers() {
@@ -220,9 +231,15 @@ export default class PointEdit extends SmartView {
     });
   }
 
-  _dateChangeHandler([userDate]) {
+  _dateFromChangeHandler([userDate]) {
     this.updateData({
       date_from: userDate,
+    });
+  }
+
+  _dateToChangeHandler([userDate]) {
+    this.updateData({
+      date_to: userDate,
     });
   }
 
