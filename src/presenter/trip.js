@@ -26,7 +26,7 @@ export default class Trip {
   }
 
   init(tripPoints) {
-    this._tripPoints = tripPoints;
+    this._tripPoints = tripPoints.slice();
     this._sourcedTripPoints = tripPoints.slice();
 
     render(this._tripSectionContainer, this._tripSectionComponent);
@@ -45,19 +45,15 @@ export default class Trip {
     this._pointPresenter[updatedPoint.id].init(updatedPoint);
   }
 
-  _sortPoints(sortType) {
+  _getSortedPoints(sortType) {
     switch (sortType) {
       case SortType.PRICE:
-        this._tripPoints.sort(sortPointPrice);
-        break;
+        return this._tripPoints.sort(sortPointPrice);
       case SortType.TIME:
-        this._tripPoints.sort(sortPointTime);
-        break;
+        return this._tripPoints.sort(sortPointTime);
       default:
-        this._tripPoints.sort(sortPointDay);
+        return this._tripPoints.sort(sortPointDay);
     }
-
-    this._currentSortType = sortType;
   }
 
   _handleSortTypeChange(sortType) {
@@ -65,7 +61,7 @@ export default class Trip {
       return;
     }
 
-    this._sortPoints(sortType);
+    this._currentSortType = sortType;
     this._clearPointList();
     this._renderPointList();
   }
@@ -82,8 +78,10 @@ export default class Trip {
   }
 
   _renderPoints() {
+    const sortedPoints = this._getSortedPoints(this._currentSortType);
+
     for (let i = 0; i < POINT_COUNT; i++) {
-      this._renderPoint(this._tripPoints[i]);
+      this._renderPoint(sortedPoints[i]);
     }
   }
 
