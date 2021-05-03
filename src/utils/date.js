@@ -4,9 +4,9 @@ dayjs.extend(duration);
 
 export const calculateDuration = (dateFrom, dateTo) => {
   const durationValue = dateTo - dateFrom;
-  const days = dayjs.duration(durationValue).$d.days;
-  const hours = dayjs.duration(durationValue).$d.hours;
-  const minutes = dayjs.duration(durationValue).$d.minutes;
+  const days = dayjs.duration(durationValue).asDays().toFixed(0);
+  const hours = dayjs.duration(durationValue).hours();
+  const minutes = dayjs.duration(durationValue).minutes();
 
   if (minutes && !hours && !days) {
     return `${minutes}M`;

@@ -164,8 +164,8 @@ export default class PointEdit extends SmartView {
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
 
     this._setInnerHandlers();
-    this._dateFromInstance();
-    this._dateToInstance();
+    this._initDateFromInstance();
+    this._initDateToInstance();
   }
 
   getTemplate() {
@@ -174,8 +174,8 @@ export default class PointEdit extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this._dateFromInstance();
-    this._dateToInstance();
+    this._initDateFromInstance();
+    this._initDateToInstance();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setCloseEditClickHandler(this._callback.closeEditClick);
   }
@@ -192,7 +192,7 @@ export default class PointEdit extends SmartView {
     );
   }
 
-  _dateFromInstance() {
+  _initDateFromInstance() {
     if (this._dateFromPicker) {
       this._dateFromPicker.destroy();
       this._dateFromPicker = null;
@@ -201,7 +201,7 @@ export default class PointEdit extends SmartView {
     this._dateFromPicker = this._getDatepickerInstance('#event-start-time-1', this._data.date_from, this._dateFromChangeHandler);
   }
 
-  _dateToInstance() {
+  _initDateToInstance() {
     if (this._dateToPicker) {
       this._dateToPicker.destroy();
       this._dateToPicker = null;
