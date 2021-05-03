@@ -2,6 +2,9 @@ import SmartView from './smart';
 import {Evt} from '../utils/common';
 import {formatDate, currentDate} from '../utils/date';
 import {types} from '../mock/point';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   base_price: '',
@@ -150,12 +153,19 @@ export default class PointEdit extends SmartView {
     this._data = point;
     this._offers = offers;
     this._destinations = destinations;
+    this._dateFromPicker = null;
+    this._dateToPicker = null;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._closeEditClickHandler = this._closeEditClickHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._eventDestinationChangeHandler = this._eventDestinationChangeHandler.bind(this);
+    this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
+    this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._initDateFromInstance();
+    this._initDateToInstance();
   }
 
   getTemplate() {
@@ -164,8 +174,40 @@ export default class PointEdit extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._initDateFromInstance();
+    this._initDateToInstance();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setCloseEditClickHandler(this._callback.closeEditClick);
+  }
+
+  _getDatepickerInstance(element, date, callback) {
+    return flatpickr(
+      this.getElement().querySelector(element),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: date,
+        onChange: callback,
+      },
+    );
+  }
+
+  _initDateFromInstance() {
+    if (this._dateFromPicker) {
+      this._dateFromPicker.destroy();
+      this._dateFromPicker = null;
+    }
+
+    this._dateFromPicker = this._getDatepickerInstance('#event-start-time-1', this._data.date_from, this._dateFromChangeHandler);
+  }
+
+  _initDateToInstance() {
+    if (this._dateToPicker) {
+      this._dateToPicker.destroy();
+      this._dateToPicker = null;
+    }
+
+    this._dateToPicker = this._getDatepickerInstance('#event-end-time-1', this._data.date_to, this._dateToChangeHandler);
   }
 
   _setInnerHandlers() {
@@ -192,6 +234,18 @@ export default class PointEdit extends SmartView {
 
     this.updateData({
       destination: currentDestination,
+    });
+  }
+
+  _dateFromChangeHandler([userDate]) {
+    this.updateData({
+      date_from: userDate,
+    });
+  }
+
+  _dateToChangeHandler([userDate]) {
+    this.updateData({
+      date_to: userDate,
     });
   }
 
