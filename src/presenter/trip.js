@@ -18,6 +18,8 @@ export default class Trip {
     this._tripSectionContainer = tripSectionContainer;
     this._pointPresenter = {};
     this._currentSortType = SortType.DAY;
+    this._offers = this._pointsModel.getOffers();
+    this._destinations = this._pointsModel.getDestinations();
 
     this._sortComponent = null;
 
@@ -46,7 +48,7 @@ export default class Trip {
   createTask() {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._pointNewPresenter.init();
+    this._pointNewPresenter.init(this._offers, this._destinations);
   }
 
   _getPoints() {
@@ -128,11 +130,8 @@ export default class Trip {
   }
 
   _renderPoint(point) {
-    const offers = this._pointsModel.getOffers();
-    const destinations = this._pointsModel.getDestinations();
-
     const pointPresenter = new PointPresenter(this._pointListComponent, this._handleViewAction, this._handleModeChange);
-    pointPresenter.init(point, offers, destinations);
+    pointPresenter.init(point, this._offers, this._destinations);
     this._pointPresenter[point.id] = pointPresenter;
   }
 
