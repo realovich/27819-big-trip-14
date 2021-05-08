@@ -23,7 +23,7 @@ export default class PointNew {
     this._offers = offers;
     this._destinations = destinations;
 
-    this._pointEditComponent = new PointEditView(null, this._offers, this._offers);
+    this._pointEditComponent = new PointEditView(undefined, this._offers, this._destinations);
     this._pointEditComponent.setCloseEditClickHandler(this._handleCloseEditClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
 
