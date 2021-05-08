@@ -1,8 +1,7 @@
 import PointView from '../view/point';
 import PointEditView from '../view/point-edit';
 import {render, replace, remove} from '../utils/render';
-import {Key, Evt} from '../utils/common';
-import {generateOffers, generateDestinations} from '../mock/point';
+import {Key, Evt, UserAction, UpdateType} from '../utils/common';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -26,14 +25,16 @@ export default class Point {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(point) {
+  init(point, offers, destinations) {
     this._point = point;
+    this._offers = offers;
+    this._destinations = destinations;
 
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
     this._pointComponent = new PointView(point);
-    this._pointEditComponent = new PointEditView(point, generateOffers(), generateDestinations());
+    this._pointEditComponent = new PointEditView(point, this._offers, this._offers);
 
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointComponent.setEditClickHandler(this._handleEditClick);
@@ -90,6 +91,8 @@ export default class Point {
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._point,
@@ -107,7 +110,11 @@ export default class Point {
   }
 
   _handleFormSubmit(point) {
-    this._changeData(point);
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MAJOR,
+      point,
+    );
     this._replaceFormToCard();
   }
 }

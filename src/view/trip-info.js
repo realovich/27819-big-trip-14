@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {convertDateToISO, formatDate} from '../utils/date';
+import {convertDateToISO, formatDate, sortDates} from '../utils/date';
 
 const MAX_DESTINATIONS_COUNT = 3;
 
@@ -29,6 +29,8 @@ const createTripInfoTemplate = (points) => {
   points.forEach((point) => {
     allTripDates.push(convertDateToISO(point.date_from), convertDateToISO(point.date_to));
   });
+
+  allTripDates.sort(sortDates);
 
   const allTripDestinations = new Set();
 

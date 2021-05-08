@@ -32,3 +32,5 @@ export const currentDate = () => {
 export const convertDateToISO = (date) => {
   return dayjs(date).toISOString();
 };
+
+export const sortDates = (dateA, dateB) => dayjs(dateA).diff(dayjs(dateB));
