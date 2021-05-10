@@ -1,5 +1,6 @@
 import SmartView from './smart';
 import {Evt} from '../utils/common';
+import {getOfferUid} from '../utils/point';
 import {formatDate, currentDate} from '../utils/date';
 import {types} from '../mock/point';
 import flatpickr from 'flatpickr';
@@ -50,25 +51,19 @@ const createPointEditDestinationSectionTemplate = (destination) => {
   return `<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
     <p class="event__destination-description">${destination.description}</p>
-
+ 
     ${photosTemplates}
   </section>`;
 };
 
-const createPointEditOffersTemplate = (offersOfType, pointOffers, pointType) => {
-  if (offersOfType.length === 0) {
+const createPointEditOffersTemplate = (availablePointOffers, pointOffers) => {
+  if (!availablePointOffers) {
     return '';
   }
 
-  const offersOfTypeItem = offersOfType.find((item) => item.type === pointType);
-
-  if (!offersOfTypeItem) {
-    return '';
-  }
-
-  const createPointAddOffersListTemplate = offersOfTypeItem.offers.map((offer) => `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.shortname}" type="checkbox" name="event-offer-${offer.shortname}" ${pointOffers.some((pointOffer) => pointOffer.shortname == offer.shortname) && 'checked'}>
-    <label class="event__offer-label" for="event-offer-${offer.shortname}">
+  const createPointAddOffersListTemplate = availablePointOffers.offers.map((offer) => `<div class="event__offer-selector">
+    <input class="event__offer-checkbox  visually-hidden" id="${getOfferUid(offer.shortname)}" type="checkbox" name="${getOfferUid(offer.shortname)}" ${pointOffers.some((pointOffer) => pointOffer.shortname == offer.shortname) && 'checked'}>
+    <label class="event__offer-label" for="${getOfferUid(offer.shortname)}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>
@@ -84,7 +79,7 @@ const createPointEditOffersTemplate = (offersOfType, pointOffers, pointType) => 
   </section>`;
 };
 
-const createPointEditTemplate = (point = {}, offersOfType, destinations) => {
+const createPointEditTemplate = (point = {}, availablePointOffers, destinations) => {
   const {base_price, date_from, date_to, destination, type, offers} = point;
 
   return `<li class="trip-events__item">
@@ -129,7 +124,7 @@ const createPointEditTemplate = (point = {}, offersOfType, destinations) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${base_price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${base_price}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -139,7 +134,7 @@ const createPointEditTemplate = (point = {}, offersOfType, destinations) => {
         </button>
       </header>
       <section class="event__details">
-        ${createPointEditOffersTemplate(offersOfType, offers, type)}
+        ${createPointEditOffersTemplate(availablePointOffers, offers)}
 
         ${createPointEditDestinationSectionTemplate(destination)}
       </section>
@@ -148,28 +143,32 @@ const createPointEditTemplate = (point = {}, offersOfType, destinations) => {
 };
 
 export default class PointEdit extends SmartView {
-  constructor(point = BLANK_POINT, offers, destinations) {
+  constructor(point, offers, destinations) {
     super();
-    this._data = point;
+    this._data = point || BLANK_POINT;
     this._offers = offers;
     this._destinations = destinations;
     this._dateFromPicker = null;
     this._dateToPicker = null;
+    this._availablePointOffers = [];
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._closeEditClickHandler = this._closeEditClickHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
+    this._offerChangeHandler = this._offerChangeHandler.bind(this);
     this._eventDestinationChangeHandler = this._eventDestinationChangeHandler.bind(this);
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
+    this._priceChangeHandler = this._priceChangeHandler.bind(this);
 
+    this._setAvailablePointOffers(this._data.type);
     this._setInnerHandlers();
     this._initDateFromInstance();
     this._initDateToInstance();
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._data, this._offers, this._destinations);
+    return createPointEditTemplate(this._data, this._availablePointOffers, this._destinations);
   }
 
   restoreHandlers() {
@@ -178,6 +177,10 @@ export default class PointEdit extends SmartView {
     this._initDateToInstance();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setCloseEditClickHandler(this._callback.closeEditClick);
+  }
+
+  _setAvailablePointOffers(type) {
+    this._availablePointOffers = this._offers.find((item) => item.type === type);
   }
 
   _getDatepickerInstance(element, date, callback) {
@@ -213,14 +216,35 @@ export default class PointEdit extends SmartView {
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-group').addEventListener(Evt.CHANGE, this._eventTypeChangeHandler);
     this.getElement().querySelector('.event__input--destination').addEventListener(Evt.CHANGE, this._eventDestinationChangeHandler);
+    this.getElement().querySelector('.event__input--price').addEventListener(Evt.CHANGE, this._priceChangeHandler);
+
+    const availableOffersElement = this.getElement().querySelector('.event__available-offers');
+
+    if (availableOffersElement) {
+      availableOffersElement.addEventListener(Evt.CHANGE, this._offerChangeHandler);
+    }
   }
 
   _eventTypeChangeHandler(evt) {
     evt.preventDefault();
 
+    const type = evt.target.value;
+
+    this._setAvailablePointOffers(type);
+
     this.updateData({
-      type: evt.target.value,
+      type,
     });
+  }
+
+  _offerChangeHandler(evt) {
+    evt.preventDefault();
+
+    if (this._data.offers.some((pointOffer) => getOfferUid(pointOffer.shortname) === evt.target.id)) {
+      console.log('Этот оффер уже выбран');
+    } else {
+      console.log('Этот оффер еще не выбран');
+    }
   }
 
   _eventDestinationChangeHandler(evt) {
@@ -246,6 +270,12 @@ export default class PointEdit extends SmartView {
   _dateToChangeHandler([userDate]) {
     this.updateData({
       date_to: userDate,
+    });
+  }
+
+  _priceChangeHandler(evt) {
+    this.updateData({
+      base_price: parseInt(evt.target.value),
     });
   }
 
