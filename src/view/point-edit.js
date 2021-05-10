@@ -240,10 +240,22 @@ export default class PointEdit extends SmartView {
   _offerChangeHandler(evt) {
     evt.preventDefault();
 
-    if (this._data.offers.some((pointOffer) => getOfferUid(pointOffer.shortname) === evt.target.id)) {
-      console.log('Этот оффер уже выбран');
+    const offerUid = evt.target.id;
+
+    const targetOfferIndex = this._data.offers.findIndex((item) => getOfferUid(item.shortname) === offerUid);
+
+    if (this._data.offers.some((pointOffer) => getOfferUid(pointOffer.shortname) === offerUid)) {
+      this._data.offers.splice(targetOfferIndex, 1);
+
+      this.updateData({
+        offers: this._data.offers,
+      });
     } else {
-      console.log('Этот оффер еще не выбран');
+      this._data.offers.push(this._availablePointOffers.offers.find((item) => getOfferUid(item.shortname) === offerUid));
+
+      this.updateData({
+        offers: this._data.offers,
+      });
     }
   }
 
