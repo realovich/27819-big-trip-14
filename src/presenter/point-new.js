@@ -57,7 +57,7 @@ export default class PointNew {
   _handleFormSubmit(point) {
     this._changeData(
       UserAction.ADD_POINT,
-      UpdateType.MINOR,
+      UpdateType.MAJOR,
       Object.assign({id: nanoid()}, point),
     );
     this.destroy();
