@@ -1,7 +1,7 @@
 import SmartView from './smart';
 import {Evt} from '../utils/common';
 import {getOfferUid} from '../utils/point';
-import {formatDate, currentDate} from '../utils/date';
+import {formatDate, getCurrentDate} from '../utils/date';
 import {types} from '../mock/point';
 import flatpickr from 'flatpickr';
 
@@ -9,8 +9,8 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   base_price: '',
-  date_from: currentDate(),
-  date_to: currentDate(),
+  date_from: getCurrentDate(),
+  date_to: getCurrentDate(),
   destination: null,
   type: 'taxi',
   offers: [],
@@ -124,7 +124,7 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations)
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${base_price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="1" value="${base_price}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -153,6 +153,7 @@ export default class PointEdit extends SmartView {
     this._availablePointOffers = [];
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._closeEditClickHandler = this._closeEditClickHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._offerChangeHandler = this._offerChangeHandler.bind(this);
@@ -171,12 +172,24 @@ export default class PointEdit extends SmartView {
     return createPointEditTemplate(this._data, this._availablePointOffers, this._destinations);
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this._dateFromPicker && this._dateToPicker) {
+      this._dateFromPicker.destroy();
+      this._dateFromPicker = null;
+      this._dateToPicker.destroy();
+      this._dateToPicker = null;
+    }
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
     this._initDateFromInstance();
     this._initDateToInstance();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setCloseEditClickHandler(this._callback.closeEditClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setAvailablePointOffers(type) {
@@ -301,6 +314,11 @@ export default class PointEdit extends SmartView {
     this._callback.closeEditClick();
   }
 
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(this._data);
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener(Evt.SUBMIT, this._formSubmitHandler);
@@ -309,5 +327,10 @@ export default class PointEdit extends SmartView {
   setCloseEditClickHandler(callback) {
     this._callback.closeEditClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener(Evt.CLICK, this._closeEditClickHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener(Evt.CLICK, this._formDeleteClickHandler);
   }
 }

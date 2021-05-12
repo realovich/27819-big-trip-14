@@ -60,6 +60,5 @@ export default class PointNew {
       UpdateType.MAJOR,
       Object.assign({id: nanoid()}, point),
     );
-    this.destroy();
   }
 }

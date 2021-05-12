@@ -9,8 +9,6 @@ import {SortType, sortPointDay, sortPointPrice, sortPointTime} from '../utils/po
 import PointPresenter from './point';
 import PointNewPresenter from './point-new';
 
-const POINT_COUNT = 20;
-
 export default class Trip {
   constructor (tripSectionContainer, pointsModel, filterModel) {
     this._pointsModel = pointsModel;
@@ -136,9 +134,7 @@ export default class Trip {
   }
 
   _renderPoints() {
-    for (let i = 0; i < POINT_COUNT; i++) {
-      this._renderPoint(this._getPoints()[i]);
-    }
+    this._getPoints().forEach((point) => this._renderPoint(point));
   }
 
   _renderNoPoints() {
