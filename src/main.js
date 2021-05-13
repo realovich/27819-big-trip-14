@@ -1,6 +1,6 @@
 import SiteTabsView from './view/site-tabs';
 import {render} from './utils/render';
-import {generatePoint} from './mock/point';
+import {generatePoint, generateOffers, generateDestinations} from './mock/point';
 import TripPresenter from './presenter/trip';
 import FilterPresenter from './presenter/filter';
 import TripInfoPresenter from './presenter/trip-info';
@@ -11,6 +11,8 @@ import { Evt } from './utils/common';
 const POINT_COUNT = 20;
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
+const offers = generateOffers();
+const destinations = generateDestinations();
 
 const pageMainElement = document.querySelector('.page-main');
 const pageHeaderElement = document.querySelector('.page-header');
@@ -20,6 +22,8 @@ const tripFiltersELement = pageHeaderElement.querySelector('.trip-controls__filt
 
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
+pointsModel.setOffers(offers);
+pointsModel.setDestinations(destinations);
 
 const filterModel = new FilterModel();
 

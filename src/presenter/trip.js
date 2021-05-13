@@ -133,8 +133,8 @@ export default class Trip {
     this._pointPresenter[point.id] = pointPresenter;
   }
 
-  _renderPoints() {
-    this._getPoints().forEach((point) => this._renderPoint(point));
+  _renderPoints(points) {
+    points.forEach((point) => this._renderPoint(point));
   }
 
   _renderNoPoints() {
@@ -156,7 +156,10 @@ export default class Trip {
   }
 
   _renderTripSection() {
-    if (this._getPoints().length === 0) {
+    const points = this._getPoints();
+    const pointsCount = points.length;
+
+    if (pointsCount === 0) {
       this._renderNoPoints();
       return;
     }
@@ -165,6 +168,6 @@ export default class Trip {
 
     render(this._tripSectionComponent, this._pointListComponent);
 
-    this._renderPoints();
+    this._renderPoints(points);
   }
 }

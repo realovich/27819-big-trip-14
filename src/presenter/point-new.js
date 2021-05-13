@@ -1,7 +1,17 @@
 import PointEditView from '../view/point-edit';
 import {render, remove, RenderPlace} from '../utils/render';
+import {getCurrentDate} from '../utils/date';
 import {Key, Evt, UserAction, UpdateType} from '../utils/common';
 import {nanoid} from 'nanoid';
+
+const BLANK_POINT = {
+  base_price: '',
+  date_from: getCurrentDate(),
+  date_to: getCurrentDate(),
+  destination: null,
+  type: 'taxi',
+  offers: [],
+};
 
 export default class PointNew {
   constructor(pointListContainer, changeData) {
@@ -23,7 +33,7 @@ export default class PointNew {
     this._offers = offers;
     this._destinations = destinations;
 
-    this._pointEditComponent = new PointEditView(null, this._offers, this._destinations);
+    this._pointEditComponent = new PointEditView(BLANK_POINT, this._offers, this._destinations);
     this._pointEditComponent.setCloseEditClickHandler(this._handleCloseEditClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
 

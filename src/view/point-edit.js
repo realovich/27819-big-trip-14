@@ -1,20 +1,11 @@
 import SmartView from './smart';
 import {Evt} from '../utils/common';
 import {getOfferUid} from '../utils/point';
-import {formatDate, getCurrentDate} from '../utils/date';
+import {formatDate} from '../utils/date';
 import {types} from '../mock/point';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
-
-const BLANK_POINT = {
-  base_price: '',
-  date_from: getCurrentDate(),
-  date_to: getCurrentDate(),
-  destination: null,
-  type: 'taxi',
-  offers: [],
-};
 
 const createPointEditTypesTemplate = (selectedType) => {
   return types.map((pointType) => `<div class="event__type-item">
@@ -145,7 +136,7 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations)
 export default class PointEdit extends SmartView {
   constructor(point, offers, destinations) {
     super();
-    this._data = point || BLANK_POINT;
+    this._data = point;
     this._offers = offers;
     this._destinations = destinations;
     this._dateFromPicker = null;
@@ -301,7 +292,7 @@ export default class PointEdit extends SmartView {
   _priceChangeHandler(evt) {
     this.updateData({
       base_price: parseInt(evt.target.value),
-    });
+    }, true);
   }
 
   _formSubmitHandler(evt) {

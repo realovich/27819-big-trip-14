@@ -3,14 +3,13 @@ import {convertDateToISO, formatDate, sortDates} from '../utils/date';
 
 const MAX_DESTINATIONS_COUNT = 3;
 
-const generateTitleTripDestinations = (setObject) => {
-  const allTripDestinationsArray = Array.from(setObject);
+const generateTitleTripDestinations = (allTripDestinations) => {
 
-  if (allTripDestinationsArray.length <= MAX_DESTINATIONS_COUNT) {
-    return allTripDestinationsArray.join(' &mdash; ');
+  if (allTripDestinations.length <= MAX_DESTINATIONS_COUNT) {
+    return allTripDestinations.join(' &mdash; ');
   }
 
-  return `${allTripDestinationsArray[0]} &mdash; ... &mdash; ${allTripDestinationsArray[allTripDestinationsArray.length - 1]}`;
+  return `${allTripDestinations[0]} &mdash; ... &mdash; ${allTripDestinations[allTripDestinations.length - 1]}`;
 };
 
 const createTripInfoTemplate = (points) => {
@@ -32,11 +31,7 @@ const createTripInfoTemplate = (points) => {
 
   allTripDates.sort(sortDates);
 
-  const allTripDestinations = new Set();
-
-  points.forEach((point) => {
-    allTripDestinations.add(point.destination.name);
-  });
+  const allTripDestinations = [...new Set(points.map((point) => point.destination.name))];
 
   return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">

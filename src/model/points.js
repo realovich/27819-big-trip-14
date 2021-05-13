@@ -1,16 +1,23 @@
 import Observer from '../utils/observer';
-import {generateOffers, generateDestinations} from '../mock/point';
 
 export default class Points extends Observer {
   constructor() {
     super();
     this._points = [];
-    this._offers = generateOffers();
-    this._destinations = generateDestinations();
+    this._offers = [];
+    this._destinations = [];
+  }
+
+  setOffers(offers) {
+    this._offers = offers;
   }
 
   getOffers() {
     return this._offers;
+  }
+
+  setDestinations(destinations) {
+    this._destinations = destinations;
   }
 
   getDestinations() {
@@ -43,8 +50,8 @@ export default class Points extends Observer {
 
   addPoint(updateType, updatedItem) {
     this._points = [
-      updatedItem,
       ...this._points,
+      updatedItem,
     ];
 
     this._notify(updateType, updatedItem);
