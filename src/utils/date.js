@@ -25,10 +25,14 @@ export const formatDate = (date, format) => {
   return dayjs(date).format(format);
 };
 
-export const currentDate = () => {
-  return dayjs();
+export const getCurrentDate = () => {
+  return dayjs().toDate();
 };
 
 export const convertDateToISO = (date) => {
   return dayjs(date).toISOString();
 };
+
+export const sortDates = (dateA, dateB) => dayjs(dateA).diff(dayjs(dateB));
+
+export const isDatesEqual = (dateA, dateB) => dayjs(dateA).isSame(dateB, 'D');

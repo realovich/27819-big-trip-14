@@ -1,13 +1,18 @@
 import SiteTabsView from './view/site-tabs';
-import TripInfoView from './view/trip-info';
-import FilterView from './view/filter';
-import {RenderPlace, render} from './utils/render';
-import {generatePoint} from './mock/point';
+import {render} from './utils/render';
+import {generatePoint, generateOffers, generateDestinations} from './mock/point';
 import TripPresenter from './presenter/trip';
+import FilterPresenter from './presenter/filter';
+import TripInfoPresenter from './presenter/trip-info';
+import PointsModel from './model/points';
+import FilterModel from './model/filter';
+import { Evt } from './utils/common';
 
 const POINT_COUNT = 20;
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
+const offers = generateOffers();
+const destinations = generateDestinations();
 
 const pageMainElement = document.querySelector('.page-main');
 const pageHeaderElement = document.querySelector('.page-header');
@@ -15,12 +20,26 @@ const tripNavigationElement = pageHeaderElement.querySelector('.trip-controls__n
 const tripMainElement = pageHeaderElement.querySelector('.trip-main');
 const tripFiltersELement = pageHeaderElement.querySelector('.trip-controls__filters');
 
+const pointsModel = new PointsModel();
+pointsModel.setPoints(points);
+pointsModel.setOffers(offers);
+pointsModel.setDestinations(destinations);
+
+const filterModel = new FilterModel();
+
 render(tripNavigationElement, new SiteTabsView());
-render(tripMainElement, new TripInfoView(points), RenderPlace.AFTERBEGIN);
-render(tripFiltersELement, new FilterView());
 
 const pageBodyContainerElement = pageMainElement.querySelector('.page-body__container');
 
-const tripPresenter = new TripPresenter(pageBodyContainerElement);
+const tripInfoPresenter = new TripInfoPresenter(tripMainElement, pointsModel);
+const filterPresenter = new FilterPresenter(tripFiltersELement, filterModel);
+const tripPresenter = new TripPresenter(pageBodyContainerElement, pointsModel, filterModel);
 
-tripPresenter.init(points);
+tripInfoPresenter.init();
+filterPresenter.init();
+tripPresenter.init();
+
+document.querySelector('.trip-main__event-add-btn').addEventListener(Evt.CLICK, (evt) => {
+  evt.preventDefault();
+  tripPresenter.createTask();
+});

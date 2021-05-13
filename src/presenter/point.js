@@ -1,8 +1,8 @@
 import PointView from '../view/point';
 import PointEditView from '../view/point-edit';
 import {render, replace, remove} from '../utils/render';
-import {Key, Evt} from '../utils/common';
-import {generateOffers, generateDestinations} from '../mock/point';
+import {Key, Evt, UserAction, UpdateType} from '../utils/common';
+import {isDatesEqual} from '../utils/date';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -23,22 +23,26 @@ export default class Point {
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleCloseEditClick = this._handleCloseEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(point) {
+  init(point, offers, destinations) {
     this._point = point;
+    this._offers = offers;
+    this._destinations = destinations;
 
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
     this._pointComponent = new PointView(point);
-    this._pointEditComponent = new PointEditView(point, generateOffers(), generateDestinations());
+    this._pointEditComponent = new PointEditView(point, this._offers, this._destinations);
 
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointComponent.setEditClickHandler(this._handleEditClick);
     this._pointEditComponent.setCloseEditClickHandler(this._handleCloseEditClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointListContainer, this._pointComponent);
@@ -90,6 +94,8 @@ export default class Point {
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._point,
@@ -106,8 +112,24 @@ export default class Point {
     this._replaceFormToCard();
   }
 
-  _handleFormSubmit(point) {
-    this._changeData(point);
+  _handleFormSubmit(updatedPoint) {
+    const isMinorUpdate =
+      !isDatesEqual(this._point.date_from, updatedPoint.date_from) ||
+      !isDatesEqual(this._point.date_to, updatedPoint.date_to);
+
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      updatedPoint,
+    );
     this._replaceFormToCard();
+  }
+
+  _handleDeleteClick(point) {
+    this._changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   }
 }

@@ -15,3 +15,5 @@ export const sortPointTime = (pointA, pointB) => {
   const durationB = pointB.date_to - pointB.date_from;
   return durationB - durationA;
 };
+
+export const getOfferUid = (value) => `event-offer-${value}`;
