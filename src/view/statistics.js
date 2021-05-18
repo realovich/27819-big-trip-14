@@ -4,6 +4,8 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {ChartSetting} from '../utils/const';
 import {formatDuration} from '../utils/date';
 
+const VALUE_POSITION = 1;
+
 const getChartSettings = (labels, data, text, formatter) => {
   return {
     plugins: [ChartDataLabels],
@@ -16,6 +18,8 @@ const getChartSettings = (labels, data, text, formatter) => {
           backgroundColor: ChartSetting.COLOR.WHITE,
           hoverBackgroundColor: ChartSetting.COLOR.WHITE,
           anchor: ChartSetting.ANCHOR.START,
+          barThickness: ChartSetting.BAR_THICKNESS,
+          minBarLength: ChartSetting.MIN_BAR_LENGTH,
         },
       ],
     },
@@ -50,7 +54,6 @@ const getChartSettings = (labels, data, text, formatter) => {
               display: false,
               drawBorder: false,
             },
-            barThickness: ChartSetting.BAR_THICKNESS,
           },
         ],
         xAxes: [
@@ -63,7 +66,6 @@ const getChartSettings = (labels, data, text, formatter) => {
               display: false,
               drawBorder: false,
             },
-            minBarLength: ChartSetting.MIN_BAR_LENGTH,
           },
         ],
       },
@@ -77,31 +79,55 @@ const getChartSettings = (labels, data, text, formatter) => {
   };
 };
 
-const getSortedArray = (chartMap) => {
-  const sortedMap = new Map([...chartMap.entries()].sort((first, second) => second[1] - first[1]));
-  const sortedArray = Array.from(sortedMap.entries()).reduce((acc, chartValue) => {
-    const [titles, values] = acc;
-    const [title, value] = chartValue;
-    return [[...titles, title.toUpperCase()], [...values, value]];
-  }, [[], []]);
-  return sortedArray;
-};
+const getChartData = (points) => {
+  const chartValues = new Map();
 
-const renderMoneyChart = (moneyCtx, points) => {
-  const moneyChartValues = new Map();
+  points.forEach((points) => {
+    const {type, base_price, date_from, date_to} = points;
+    const duration = date_to - date_from;
 
-  points.forEach((point) => {
-    const {type, base_price} = point;
-
-    const typeValue = moneyChartValues.get(type);
+    const typeValue = chartValues.get(type);
     if (!typeValue) {
-      moneyChartValues.set(type, base_price);
+      chartValues.set(type, {
+        base_price,
+        count: 1,
+        duration,
+      });
     } else {
-      moneyChartValues.set(type, typeValue + base_price);
+      const {base_price: typeValueBasePrice, count, duration: typeValueDuration} = typeValue;
+
+      chartValues.set(type,
+        {
+          base_price: (typeValueBasePrice + base_price),
+          count: count + 1,
+          duration: typeValueDuration + duration,
+        });
     }
   });
 
-  const [types, prices] = getSortedArray(moneyChartValues);
+  return chartValues;
+};
+
+const getSortedArray = (chartMap, fieldName) => {
+
+  const sortedMap = [...chartMap.entries()].sort((first, second) => {
+    const firstValue = first[VALUE_POSITION];
+    const secondValue = second[VALUE_POSITION];
+    return secondValue[fieldName] - firstValue[fieldName];
+  });
+
+  const sortedArray = sortedMap.reduce((acc, chartValue) => {
+    const [titles, values] = acc;
+    const [title, value] = chartValue;
+    return [[...titles, title.toUpperCase()], [...values, value[fieldName]]];
+  }, [[], []]);
+
+  return sortedArray;
+};
+
+const renderMoneyChart = (moneyCtx, chartData) => {
+
+  const [types, prices] = getSortedArray(chartData, 'base_price');
 
   const priceFormatter = (val) => `€ ${val}`;
 
@@ -110,22 +136,8 @@ const renderMoneyChart = (moneyCtx, points) => {
   return new Chart(moneyCtx, getChartSettings(types, prices, ChartSetting.TEXT.MONEY, priceFormatter));
 };
 
-const renderTypeChart = (typeCtx, points) => {
-  const typeChartValues = new Map();
-
-  points.forEach((point) => {
-    const {type} = point;
-
-    const typeValue = typeChartValues.get(type);
-
-    if (!typeValue) {
-      typeChartValues.set(type, 1);
-    } else {
-      typeChartValues.set(type, typeValue + 1);
-    }
-  });
-
-  const [types, counts] = getSortedArray(typeChartValues);
+const renderTypeChart = (typeCtx, chartData) => {
+  const [types, counts] = getSortedArray(chartData, 'count');
 
   const countFormatter = (val) => `${val}x`;
 
@@ -134,22 +146,8 @@ const renderTypeChart = (typeCtx, points) => {
   return new Chart(typeCtx, getChartSettings(types, counts, ChartSetting.TEXT.TYPE, countFormatter));
 };
 
-const renderTimeChart = (timeCtx, points) => {
-  const timeChartValues = new Map();
-
-  points.forEach((point) => {
-    const {type, date_from, date_to} = point;
-
-    const typeValue = timeChartValues.get(type);
-
-    if (!typeValue) {
-      timeChartValues.set(type, date_to - date_from);
-    } else {
-      timeChartValues.set(type, typeValue + (date_to - date_from));
-    }
-  });
-
-  const [types, durations] = getSortedArray(timeChartValues);
+const renderTimeChart = (timeCtx, chartData) => {
+  const [types, durations] = getSortedArray(chartData, 'duration');
 
   const timeFormatter = (val) => formatDuration(val);
 
@@ -159,7 +157,7 @@ const renderTimeChart = (timeCtx, points) => {
 };
 
 const createStatisticsTemplate = () => {
-  return `<section class="statistics">
+  return `<section class="statistics statistics--hidden">
     <h2 class="visually-hidden">Trip statistics</h2>
 
     <div class="statistics__item statistics__item--money">
@@ -194,11 +192,11 @@ export default class Statistics extends AbstractView {
   }
 
   show() {
-    this.getElement().classList.add('hidden');
+    this.getElement().classList.remove('statistics--hidden');
   }
 
   hide() {
-    this.getElement().classList.remove('hidden');
+    this.getElement().classList.add('statistics--hidden');
   }
 
   _setCharts() {
@@ -206,8 +204,10 @@ export default class Statistics extends AbstractView {
     const typeCtx = this.getElement().querySelector('.statistics__chart--transport');
     const timeCtx = this.getElement().querySelector('.statistics__chart--time');
 
-    this._moneyChart = renderMoneyChart(moneyCtx, this._points);
-    this._typeChart = renderTypeChart(typeCtx, this._points);
-    this._timeChart = renderTimeChart(timeCtx, this._points);
+    const chartData = getChartData(this._points);
+
+    this._moneyChart = renderMoneyChart(moneyCtx, chartData);
+    this._typeChart = renderTypeChart(typeCtx, chartData);
+    this._timeChart = renderTimeChart(timeCtx, chartData);
   }
 }

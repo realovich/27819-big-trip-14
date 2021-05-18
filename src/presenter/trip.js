@@ -61,6 +61,7 @@ export default class Trip {
 
   show() {
     this._tripSectionComponent.getElement().classList.remove('trip-events--hidden');
+    this._currentSortType = SortType.DAY;
   }
 
   hide() {
