@@ -2,11 +2,10 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
-export const calculateDuration = (dateFrom, dateTo) => {
-  const durationValue = dateTo - dateFrom;
-  const days = dayjs.duration(durationValue).asDays().toFixed(0);
-  const hours = dayjs.duration(durationValue).hours();
-  const minutes = dayjs.duration(durationValue).minutes();
+export const formatDuration = (duration) => {
+  const days = dayjs.duration(duration).asDays().toFixed(0);
+  const hours = dayjs.duration(duration).hours();
+  const minutes = dayjs.duration(duration).minutes();
 
   if (minutes && !hours && !days) {
     return `${minutes}M`;

@@ -1,6 +1,6 @@
 import AbstractView from './abstract';
 import {Evt} from '../utils/common';
-import {calculateDuration, formatDate} from '../utils/date';
+import {formatDuration, formatDate} from '../utils/date';
 
 const createOffersListTemplate = (offers) => {
   if (offers.length === 0) {
@@ -20,6 +20,7 @@ const createOffersListTemplate = (offers) => {
 const createPointTemplate = (point) => {
   const {type, base_price, offers, date_from, date_to, destination, is_favorite} = point;
 
+  const duration = date_to - date_from;
   const favoriteClassName = is_favorite ? ' event__favorite-btn--active' : '';
 
   return `<li class="trip-events__item">
@@ -35,7 +36,7 @@ const createPointTemplate = (point) => {
           &mdash;
           <time class="event__end-time" datetime="${formatDate(date_to, 'YYYY-MM-DDTHH:mm')}">${formatDate(date_to, 'HH:mm')}</time>
         </p>
-        <p class="event__duration">${calculateDuration(date_from, date_to)}</p>
+        <p class="event__duration">${formatDuration(duration)}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${base_price}</span>

@@ -1,13 +1,8 @@
 import AbstractView from './abstract';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {leaveUniqueItems, countPointsByType, countPriceByType} from '../utils/statistics';
 import {ChartSetting} from '../utils/const';
-
-const getUniquePointTypes = (points) => {
-  const pointTypes = points.map((point) => point.type);
-  return leaveUniqueItems(pointTypes);
-};
+import {formatDuration} from '../utils/date';
 
 const getChartSettings = (labels, data, text, formatter) => {
   return {
@@ -82,28 +77,85 @@ const getChartSettings = (labels, data, text, formatter) => {
   };
 };
 
+const getSortedArray = (chartMap) => {
+  const sortedMap = new Map([...chartMap.entries()].sort((first, second) => second[1] - first[1]));
+  const sortedArray = Array.from(sortedMap.entries()).reduce((acc, chartValue) => {
+    const [titles, values] = acc;
+    const [title, value] = chartValue;
+    return [[...titles, title.toUpperCase()], [...values, value]];
+  }, [[], []]);
+  return sortedArray;
+};
+
 const renderMoneyChart = (moneyCtx, points) => {
-  const uniqueTypes = getUniquePointTypes(points);
-  const pricesByTypes = uniqueTypes.map((type) => countPriceByType(points, type));
+  const moneyChartValues = new Map();
+
+  points.forEach((point) => {
+    const {type, base_price} = point;
+
+    const typeValue = moneyChartValues.get(type);
+    if (!typeValue) {
+      moneyChartValues.set(type, base_price);
+    } else {
+      moneyChartValues.set(type, typeValue + base_price);
+    }
+  });
+
+  const [types, prices] = getSortedArray(moneyChartValues);
+
   const priceFormatter = (val) => `€ ${val}`;
 
-  moneyCtx.height = ChartSetting.BAR_HEIGHT * uniqueTypes.length;
+  moneyCtx.height = ChartSetting.BAR_HEIGHT * types.length;
 
-  return new Chart(moneyCtx, getChartSettings(uniqueTypes, pricesByTypes, ChartSetting.TEXT.TYPE, priceFormatter));
+  return new Chart(moneyCtx, getChartSettings(types, prices, ChartSetting.TEXT.MONEY, priceFormatter));
 };
 
 const renderTypeChart = (typeCtx, points) => {
-  const uniqueTypes = getUniquePointTypes(points);
-  const pointByTypeCounts = uniqueTypes.map((type) => countPointsByType(points, type));
-  const countFormater = (val) => `${val}x`;
+  const typeChartValues = new Map();
 
-  typeCtx.height = ChartSetting.BAR_HEIGHT * uniqueTypes.length;
+  points.forEach((point) => {
+    const {type} = point;
 
-  return new Chart(typeCtx, getChartSettings(uniqueTypes, pointByTypeCounts, ChartSetting.TEXT.TYPE, countFormater));
+    const typeValue = typeChartValues.get(type);
+
+    if (!typeValue) {
+      typeChartValues.set(type, 1);
+    } else {
+      typeChartValues.set(type, typeValue + 1);
+    }
+  });
+
+  const [types, counts] = getSortedArray(typeChartValues);
+
+  const countFormatter = (val) => `${val}x`;
+
+  typeCtx.height = ChartSetting.BAR_HEIGHT * types.length;
+
+  return new Chart(typeCtx, getChartSettings(types, counts, ChartSetting.TEXT.TYPE, countFormatter));
 };
 
 const renderTimeChart = (timeCtx, points) => {
-  //
+  const timeChartValues = new Map();
+
+  points.forEach((point) => {
+    const {type, date_from, date_to} = point;
+
+    const typeValue = timeChartValues.get(type);
+
+    if (!typeValue) {
+      timeChartValues.set(type, date_to - date_from);
+    } else {
+      timeChartValues.set(type, typeValue + (date_to - date_from));
+    }
+  });
+
+  const [types, durations] = getSortedArray(timeChartValues);
+
+  const timeFormatter = (val) => formatDuration(val);
+
+  timeCtx.height = ChartSetting.BAR_HEIGHT * types.length;
+
+  return new Chart(timeCtx, getChartSettings(types, durations, ChartSetting.TEXT.TIME_SPEND, timeFormatter));
 };
 
 const createStatisticsTemplate = () => {
@@ -152,7 +204,7 @@ export default class Statistics extends AbstractView {
   _setCharts() {
     const moneyCtx = this.getElement().querySelector('.statistics__chart--money');
     const typeCtx = this.getElement().querySelector('.statistics__chart--transport');
-    const timeCtx = this.getElement().querySelector('.statistics__chart--spend');
+    const timeCtx = this.getElement().querySelector('.statistics__chart--time');
 
     this._moneyChart = renderMoneyChart(moneyCtx, this._points);
     this._typeChart = renderTypeChart(typeCtx, this._points);
