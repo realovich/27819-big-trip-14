@@ -157,7 +157,7 @@ const renderTimeChart = (timeCtx, chartData) => {
 };
 
 const createStatisticsTemplate = () => {
-  return `<section class="statistics statistics--hidden">
+  return `<section class="statistics">
     <h2 class="visually-hidden">Trip statistics</h2>
 
     <div class="statistics__item statistics__item--money">
@@ -189,14 +189,6 @@ export default class Statistics extends AbstractView {
 
   getTemplate() {
     return createStatisticsTemplate();
-  }
-
-  show() {
-    this.getElement().classList.remove('statistics--hidden');
-  }
-
-  hide() {
-    this.getElement().classList.add('statistics--hidden');
   }
 
   _setCharts() {

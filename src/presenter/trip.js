@@ -59,15 +59,6 @@ export default class Trip {
     this._pointNewPresenter.init(this._offers, this._destinations);
   }
 
-  show() {
-    this._tripSectionComponent.getElement().classList.remove('trip-events--hidden');
-    this._currentSortType = SortType.DAY;
-  }
-
-  hide() {
-    this._tripSectionComponent.getElement().classList.add('trip-events--hidden');
-  }
-
   _getPoints() {
     const filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();

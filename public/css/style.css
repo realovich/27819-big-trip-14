@@ -975,8 +975,6 @@ main {
 .statistics {
   padding-top: 47px;
   padding-left: 37px; }
-  .statistics--hidden {
-    display: none; }
 
 .statistics__item:not(:last-child) {
   margin-bottom: 78px; }
