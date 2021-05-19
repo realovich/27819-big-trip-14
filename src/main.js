@@ -1,12 +1,13 @@
-import SiteTabsView from './view/site-tabs';
-import {render} from './utils/render';
+import TripTabsView from './view/trip-tabs';
+import StatisticsView from './view/statistics';
+import {render, remove} from './utils/render';
 import {generatePoint, generateOffers, generateDestinations} from './mock/point';
 import TripPresenter from './presenter/trip';
 import FilterPresenter from './presenter/filter';
 import TripInfoPresenter from './presenter/trip-info';
 import PointsModel from './model/points';
 import FilterModel from './model/filter';
-import { Evt } from './utils/common';
+import { Evt, MenuItem } from './utils/common';
 
 const POINT_COUNT = 20;
 
@@ -27,13 +28,34 @@ pointsModel.setDestinations(destinations);
 
 const filterModel = new FilterModel();
 
-render(tripNavigationElement, new SiteTabsView());
+const tripTabsComponent = new TripTabsView();
+render(tripNavigationElement, tripTabsComponent);
 
 const pageBodyContainerElement = pageMainElement.querySelector('.page-body__container');
 
 const tripInfoPresenter = new TripInfoPresenter(tripMainElement, pointsModel);
 const filterPresenter = new FilterPresenter(tripFiltersELement, filterModel);
 const tripPresenter = new TripPresenter(pageBodyContainerElement, pointsModel, filterModel);
+
+let statisticsComponent = null;
+
+const handleTripTabsClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.TABLE:
+      remove(statisticsComponent);
+      tripTabsComponent.setMenuItem(MenuItem.TABLE);
+      tripPresenter.init();
+      break;
+    case MenuItem.STATS:
+      tripPresenter.destroy();
+      tripTabsComponent.setMenuItem(MenuItem.STATS);
+      statisticsComponent = new StatisticsView(pointsModel.getPoints());
+      render(pageBodyContainerElement, statisticsComponent);
+      break;
+  }
+};
+
+tripTabsComponent.setMenuClickHandler(handleTripTabsClick);
 
 tripInfoPresenter.init();
 filterPresenter.init();
