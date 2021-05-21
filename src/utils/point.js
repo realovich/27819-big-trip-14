@@ -6,13 +6,13 @@ export const SortType = {
   PRICE: 'sort-price',
 };
 
-export const sortPointPrice = (pointA, pointB) => pointB.base_price - pointA.base_price;
+export const sortPointPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
-export const sortPointDay = (pointA, pointB) => dayjs(pointA.date_from).diff(dayjs(pointB.date_from));
+export const sortPointDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 
 export const sortPointTime = (pointA, pointB) => {
-  const durationA = pointA.date_to - pointA.date_from;
-  const durationB = pointB.date_to - pointB.date_from;
+  const durationA = pointA.dateTo - pointA.dateFrom;
+  const durationB = pointB.dateTo - pointB.dateFrom;
   return durationB - durationA;
 };
 

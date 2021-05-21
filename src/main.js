@@ -8,12 +8,20 @@ import TripInfoPresenter from './presenter/trip-info';
 import PointsModel from './model/points';
 import FilterModel from './model/filter';
 import { Evt, MenuItem } from './utils/common';
+import Api from './api';
 
 const POINT_COUNT = 20;
+const AUTHORIZATION = 'Basic re15ch21viTo40';
+const END_POITN = 'https://14.ecmascript.pages.academy/big-trip/';
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 const offers = generateOffers();
 const destinations = generateDestinations();
+const api = new Api(END_POITN, AUTHORIZATION);
+
+api.getPoints().then((points) => {
+  console.log(points);
+});
 
 const pageMainElement = document.querySelector('.page-main');
 const pageHeaderElement = document.querySelector('.page-header');

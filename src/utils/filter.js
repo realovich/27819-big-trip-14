@@ -6,14 +6,14 @@ const isCurrentDay = (dayA, dayB) => currentDate.isAfter(dayA, 'D') && currentDa
 
 export const filter = {
   [FilterType.FUTURE]: (points) => points.filter((point) => {
-    const isFuture = currentDate.isBefore(point.date_from, 'D') || currentDate.isSame(point.date_from, 'D');
+    const isFuture = currentDate.isBefore(point.dateFrom, 'D') || currentDate.isSame(point.dateFrom, 'D');
 
-    return isFuture || isCurrentDay(point.date_from, point.date_to);
+    return isFuture || isCurrentDay(point.dateFrom, point.dateTo);
   }),
   [FilterType.PAST]: (points) =>
     points.filter((point) => {
-      const isPast = currentDate.isAfter(point.date_to, 'D');
+      const isPast = currentDate.isAfter(point.dateTo, 'D');
 
-      return isPast || isCurrentDay(point.date_from, point.date_to);
+      return isPast || isCurrentDay(point.dateFrom, point.dateTo);
     }),
 };

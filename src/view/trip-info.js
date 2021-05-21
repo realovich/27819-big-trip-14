@@ -20,13 +20,13 @@ const createTripInfoTemplate = (points) => {
   const tripCost = points.reduce((sum, current) => {
     const pointOffersCost = current.offers.reduce((sumOffers, currentOffer) => sumOffers + currentOffer.price, 0);
 
-    return sum + current.base_price + pointOffersCost;
+    return sum + current.basePrice + pointOffersCost;
   }, 0);
 
   const allTripDates = [];
 
   points.forEach((point) => {
-    allTripDates.push(convertDateToISO(point.date_from), convertDateToISO(point.date_to));
+    allTripDates.push(convertDateToISO(point.dateFrom), convertDateToISO(point.dateTo));
   });
 
   allTripDates.sort(sortDates);

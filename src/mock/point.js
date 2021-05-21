@@ -166,11 +166,11 @@ export const generatePoint = () => {
 
   return {
     id: nanoid(),
-    base_price: getRandomArrayElement(pointPrices),
-    date_from: dateFrom,
-    date_to: dateTo,
+    basePrice: getRandomArrayElement(pointPrices),
+    dateFrom,
+    dateTo,
     destination: getRandomArrayElement(generateDestinations()),
-    is_favorite: Boolean(getRandomInteger(0, 1)),
+    isFavorite: Boolean(getRandomInteger(0, 1)),
     type,
     offers: generatePointOffers(generateOffers(), type),
   };

@@ -83,22 +83,22 @@ const getChartData = (points) => {
   const chartValues = new Map();
 
   points.forEach((points) => {
-    const {type, base_price, date_from, date_to} = points;
-    const duration = date_to - date_from;
+    const {type, basePrice, dateFrom, dateTo} = points;
+    const duration = dateTo - dateFrom;
 
     const typeValue = chartValues.get(type);
     if (!typeValue) {
       chartValues.set(type, {
-        base_price,
+        basePrice,
         count: 1,
         duration,
       });
     } else {
-      const {base_price: typeValueBasePrice, count, duration: typeValueDuration} = typeValue;
+      const {basePrice: typeValueBasePrice, count, duration: typeValueDuration} = typeValue;
 
       chartValues.set(type,
         {
-          base_price: (typeValueBasePrice + base_price),
+          basePrice: (typeValueBasePrice + basePrice),
           count: count + 1,
           duration: typeValueDuration + duration,
         });
@@ -127,7 +127,7 @@ const getSortedArray = (chartMap, fieldName) => {
 
 const renderMoneyChart = (moneyCtx, chartData) => {
 
-  const [types, prices] = getSortedArray(chartData, 'base_price');
+  const [types, prices] = getSortedArray(chartData, 'basePrice');
 
   const priceFormatter = (val) => `€ ${val}`;
 

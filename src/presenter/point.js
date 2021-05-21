@@ -99,7 +99,7 @@ export default class Point {
       Object.assign(
         {},
         this._point,
-        {is_favorite: !this._point.is_favorite},
+        {isFavorite: !this._point.isFavorite},
       ),
     );
   }
@@ -114,8 +114,8 @@ export default class Point {
 
   _handleFormSubmit(updatedPoint) {
     const isMinorUpdate =
-      !isDatesEqual(this._point.date_from, updatedPoint.date_from) ||
-      !isDatesEqual(this._point.date_to, updatedPoint.date_to);
+      !isDatesEqual(this._point.dateFrom, updatedPoint.dateFrom) ||
+      !isDatesEqual(this._point.dateTo, updatedPoint.dateTo);
 
     this._changeData(
       UserAction.UPDATE_POINT,

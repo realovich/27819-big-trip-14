@@ -71,7 +71,7 @@ const createPointEditOffersTemplate = (availablePointOffers, pointOffers) => {
 };
 
 const createPointEditTemplate = (point = {}, availablePointOffers, destinations) => {
-  const {base_price, date_from, date_to, destination, type, offers} = point;
+  const {basePrice, dateFrom, dateTo, destination, type, offers} = point;
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -104,10 +104,10 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations)
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(date_from, 'DD/MM/YY HH:mm')}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(dateFrom, 'DD/MM/YY HH:mm')}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(date_to, 'DD/MM/YY HH:mm')}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(dateTo, 'DD/MM/YY HH:mm')}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -115,7 +115,7 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations)
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="1" value="${base_price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="1" value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -205,7 +205,7 @@ export default class PointEdit extends SmartView {
       this._dateFromPicker = null;
     }
 
-    this._dateFromPicker = this._getDatepickerInstance('#event-start-time-1', this._data.date_from, this._dateFromChangeHandler);
+    this._dateFromPicker = this._getDatepickerInstance('#event-start-time-1', this._data.dateFrom, this._dateFromChangeHandler);
   }
 
   _initDateToInstance() {
@@ -214,7 +214,7 @@ export default class PointEdit extends SmartView {
       this._dateToPicker = null;
     }
 
-    this._dateToPicker = this._getDatepickerInstance('#event-end-time-1', this._data.date_to, this._dateToChangeHandler);
+    this._dateToPicker = this._getDatepickerInstance('#event-end-time-1', this._data.dateTo, this._dateToChangeHandler);
   }
 
   _setInnerHandlers() {
@@ -279,19 +279,19 @@ export default class PointEdit extends SmartView {
 
   _dateFromChangeHandler([userDate]) {
     this.updateData({
-      date_from: userDate,
+      dateFrom: userDate,
     });
   }
 
   _dateToChangeHandler([userDate]) {
     this.updateData({
-      date_to: userDate,
+      dateTo: userDate,
     });
   }
 
   _priceChangeHandler(evt) {
     this.updateData({
-      base_price: parseInt(evt.target.value),
+      basePrice: parseInt(evt.target.value),
     }, true);
   }
 

@@ -18,28 +18,28 @@ const createOffersListTemplate = (offers) => {
 };
 
 const createPointTemplate = (point) => {
-  const {type, base_price, offers, date_from, date_to, destination, is_favorite} = point;
+  const {type, basePrice, offers, dateFrom, dateTo, destination, isFavorite} = point;
 
-  const duration = date_to - date_from;
-  const favoriteClassName = is_favorite ? ' event__favorite-btn--active' : '';
+  const duration = dateTo - dateFrom;
+  const favoriteClassName = isFavorite ? ' event__favorite-btn--active' : '';
 
   return `<li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="${formatDate(date_from, 'YYYY-MM-DD')}">${formatDate(date_from, 'MMM D')}</time>
+      <time class="event__date" datetime="${formatDate(dateFrom, 'YYYY-MM-DD')}">${formatDate(dateFrom, 'MMM D')}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">${type} ${destination.name}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${formatDate(date_from, 'YYYY-MM-DDTHH:mm')}">${formatDate(date_from, 'HH:mm')}</time>
+          <time class="event__start-time" datetime="${formatDate(dateFrom, 'YYYY-MM-DDTHH:mm')}">${formatDate(dateFrom, 'HH:mm')}</time>
           &mdash;
-          <time class="event__end-time" datetime="${formatDate(date_to, 'YYYY-MM-DDTHH:mm')}">${formatDate(date_to, 'HH:mm')}</time>
+          <time class="event__end-time" datetime="${formatDate(dateTo, 'YYYY-MM-DDTHH:mm')}">${formatDate(dateTo, 'HH:mm')}</time>
         </p>
         <p class="event__duration">${formatDuration(duration)}</p>
       </div>
       <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">${base_price}</span>
+        &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
       </p>
       ${createOffersListTemplate(offers)}
       <button class="event__favorite-btn${favoriteClassName}" type="button">

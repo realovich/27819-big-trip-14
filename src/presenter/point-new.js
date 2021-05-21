@@ -5,9 +5,9 @@ import {Key, Evt, UserAction, UpdateType} from '../utils/common';
 import {nanoid} from 'nanoid';
 
 const BLANK_POINT = {
-  base_price: '',
-  date_from: getCurrentDate(),
-  date_to: getCurrentDate(),
+  basePrice: '',
+  dateFrom: getCurrentDate(),
+  dateTo: getCurrentDate(),
   destination: null,
   type: 'taxi',
   offers: [],
