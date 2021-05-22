@@ -2,7 +2,6 @@ import PointEditView from '../view/point-edit';
 import {render, remove, RenderPlace} from '../utils/render';
 import {getCurrentDate} from '../utils/date';
 import {Key, Evt, UserAction, UpdateType} from '../utils/common';
-import {nanoid} from 'nanoid';
 
 const BLANK_POINT = {
   basePrice: '',
@@ -68,7 +67,7 @@ export default class PointNew {
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
-      Object.assign({id: nanoid()}, point),
+      point,
     );
   }
 }

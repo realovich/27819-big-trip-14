@@ -2,15 +2,14 @@ import SmartView from './smart';
 import {Evt} from '../utils/common';
 import {getOfferUid} from '../utils/point';
 import {formatDate} from '../utils/date';
-import {types} from '../mock/point';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-const createPointEditTypesTemplate = (selectedType) => {
-  return types.map((pointType) => `<div class="event__type-item">
-    <input id="event-type-${pointType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}"${selectedType === pointType ? ' checked' : ''}>
-    <label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}-1">${pointType}</label>
+const createPointEditTypesTemplate = (selectedType, offers) => {
+  return offers.map((offer) => `<div class="event__type-item">
+    <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}"${selectedType === offer.type ? ' checked' : ''}>
+    <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-1">${offer.type}</label>
   </div>`).join('');
 };
 
@@ -23,7 +22,7 @@ const createPointEditPhotosTemplate = (photos) => {
     return '';
   }
 
-  const photosList = photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('');
+  const photosList = photos.map((photo) => `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`).join('');
 
   return `<div class="event__photos-container">
     <div class="event__photos-tape">
@@ -87,7 +86,7 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations)
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
 
-              ${createPointEditTypesTemplate(type)}
+              ${createPointEditTypesTemplate(type, availablePointOffers)}
             </fieldset>
           </div>
         </div>

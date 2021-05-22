@@ -2,6 +2,7 @@ import TripSectionView from '../view/trip-section';
 import SortView from '../view/sort';
 import PointListView from '../view/point-list';
 import NoPointView from '../view/no-point';
+import LoadingView from '../view/loading';
 import {filter} from '../utils/filter';
 import {remove, render} from '../utils/render';
 import {UpdateType, UserAction, FilterType} from '../utils/common.js';
@@ -10,7 +11,7 @@ import PointPresenter from './point';
 import PointNewPresenter from './point-new';
 
 export default class Trip {
-  constructor (tripSectionContainer, pointsModel, filterModel) {
+  constructor (tripSectionContainer, pointsModel, filterModel, api) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
     this._tripSectionContainer = tripSectionContainer;
@@ -18,12 +19,15 @@ export default class Trip {
     this._currentSortType = SortType.DAY;
     this._offers = this._pointsModel.getOffers();
     this._destinations = this._pointsModel.getDestinations();
+    this._isLoading = true;
+    this._api = api;
 
     this._sortComponent = null;
 
     this._tripSectionComponent = new TripSectionView();
     this._pointListComponent = new PointListView();
     this._noPointComponent = new NoPointView();
+    this._loadingComponent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -88,13 +92,19 @@ export default class Trip {
   _handleViewAction(actionType, updateType, updatedItem) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, updatedItem);
+        this._api.updatePoint(updatedItem).then((response) => {
+          this._pointsModel.updatePoint(updateType, response);
+        });
         break;
       case UserAction.ADD_POINT:
-        this._pointsModel.addPoint(updateType, updatedItem);
+        this._api.addPoint(updatedItem).then((response) => {
+          this._pointsModel.addPoint(updateType, response);
+        });
         break;
       case UserAction.DELETE_POINT:
-        this._pointsModel.deletePoint(updateType, updatedItem);
+        this._api.deletePoint(updatedItem).then(() => {
+          this._pointsModel.deletePoint(updateType, updatedItem);
+        });
         break;
     }
   }
@@ -110,6 +120,11 @@ export default class Trip {
         break;
       case UpdateType.MAJOR:
         this._clearTripSection({resetSortType: true});
+        this._renderTripSection();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderTripSection();
         break;
     }
@@ -151,6 +166,10 @@ export default class Trip {
     render(this._tripSectionComponent, this._noPointComponent);
   }
 
+  _renderLoading() {
+    render(this._tripSectionComponent, this._loadingComponent);
+  }
+
   _clearTripSection({resetSortType = false} = {}) {
     this._pointNewPresenter.destroy();
 
@@ -159,6 +178,7 @@ export default class Trip {
 
     remove(this._sortComponent);
     remove(this._noPointComponent);
+    remove(this._loadingComponent);
 
     if (resetSortType) {
       this._currentSortType = SortType.DAY;
@@ -166,6 +186,11 @@ export default class Trip {
   }
 
   _renderTripSection() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const points = this._getPoints();
     const pointsCount = points.length;
 
