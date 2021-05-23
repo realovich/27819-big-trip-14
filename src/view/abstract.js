@@ -1,5 +1,7 @@
 import {createElement} from '../utils/render';
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 export default class Abstract {
   constructor() {
     if (new.target === Abstract) {
@@ -25,5 +27,13 @@ export default class Abstract {
 
   removeElement() {
     this._element = null;
+  }
+
+  shake(callback) {
+    this.getElement().classList.add('shake');
+    setTimeout(() => {
+      this.getElement().classList.remove('shake');
+      callback();
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }

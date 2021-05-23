@@ -1,7 +1,7 @@
 import PointView from '../view/point';
 import PointEditView from '../view/point-edit';
 import {render, replace, remove} from '../utils/render';
-import {Key, Evt, UserAction, UpdateType} from '../utils/common';
+import {Key, Evt, UserAction, UpdateType, State} from '../utils/common';
 import {isDatesEqual} from '../utils/date';
 
 const Mode = {
@@ -69,6 +69,35 @@ export default class Point {
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToCard();
+    }
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._pointEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this._pointComponent.shake(resetFormState);
+        this._pointEditComponent.shake(resetFormState);
+        break;
     }
   }
 

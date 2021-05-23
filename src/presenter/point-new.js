@@ -10,6 +10,7 @@ const BLANK_POINT = {
   destination: null,
   type: 'taxi',
   offers: [],
+  isFavorite: false,
 };
 
 export default class PointNew {
@@ -50,6 +51,25 @@ export default class PointNew {
 
     this._pointEditComponent = null;
     document.removeEventListener(Evt.KEYDOWN, this._escKeyDownHandler);
+  }
+
+  setSaving() {
+    this._pointEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._pointEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._pointEditComponent.shake(resetFormState);
   }
 
   _escKeyDownHandler(evt) {

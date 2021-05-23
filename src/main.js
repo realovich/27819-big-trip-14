@@ -54,7 +54,7 @@ tripPresenter.init();
 
 document.querySelector('.trip-main__event-add-btn').addEventListener(Evt.CLICK, (evt) => {
   evt.preventDefault();
-  tripPresenter.createTask();
+  tripPresenter.createPoint();
 });
 
 Promise.all([api.getDestinations(), api.getOffers(), api.getPoints()])

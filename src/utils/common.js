@@ -3,6 +3,12 @@ export const Key = {
   ESCAPE: 'Escape',
 };
 
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+};
+
 export const Evt = {
   CLICK: 'click',
   KEYDOWN: 'keydown',

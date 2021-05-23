@@ -5,7 +5,7 @@ import NoPointView from '../view/no-point';
 import LoadingView from '../view/loading';
 import {filter} from '../utils/filter';
 import {remove, render} from '../utils/render';
-import {UpdateType, UserAction, FilterType} from '../utils/common.js';
+import {UpdateType, UserAction, FilterType, State} from '../utils/common.js';
 import {SortType, sortPointDay, sortPointPrice, sortPointTime} from '../utils/point';
 import PointPresenter from './point';
 import PointNewPresenter from './point-new';
@@ -55,7 +55,7 @@ export default class Trip {
     this._filterModel.removeObserver(this._handleModelEvent);
   }
 
-  createTask() {
+  createPoint() {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._pointNewPresenter.init(this._pointsModel.getOffers(), this._pointsModel.getDestinations());
@@ -90,19 +90,34 @@ export default class Trip {
   _handleViewAction(actionType, updateType, updatedItem) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._api.updatePoint(updatedItem).then((response) => {
-          this._pointsModel.updatePoint(updateType, response);
-        });
+        this._pointPresenter[updatedItem.id].setViewState(State.SAVING);
+        this._api.updatePoint(updatedItem)
+          .then((response) => {
+            this._pointsModel.updatePoint(updateType, response);
+          })
+          .catch(() => {
+            this._pointPresenter[updatedItem.id].setViewState(State.ABORTING);
+          });
         break;
       case UserAction.ADD_POINT:
-        this._api.addPoint(updatedItem).then((response) => {
-          this._pointsModel.addPoint(updateType, response);
-        });
+        this._pointNewPresenter.setSaving();
+        this._api.addPoint(updatedItem)
+          .then((response) => {
+            this._pointsModel.addPoint(updateType, response);
+          })
+          .catch(() => {
+            this._pointNewPresenter.setAborting();
+          });
         break;
       case UserAction.DELETE_POINT:
-        this._api.deletePoint(updatedItem).then(() => {
-          this._pointsModel.deletePoint(updateType, updatedItem);
-        });
+        this._pointPresenter[updatedItem.id].setViewState(State.DELETING);
+        this._api.deletePoint(updatedItem)
+          .then(() => {
+            this._pointsModel.deletePoint(updateType, updatedItem);
+          })
+          .catch(() => {
+            this._pointPresenter[updatedItem.id].setViewState(State.ABORTING);
+          });
         break;
     }
   }
