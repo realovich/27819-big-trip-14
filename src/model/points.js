@@ -102,7 +102,7 @@ export default class Points extends Observer {
         'base_price': point.basePrice,
         'date_from': point.dateFrom.toISOString(),
         'date_to': point.dateTo.toISOString(),
-        'is_favorite': point.isFavorite,
+        'is_favorite': point.isFavorite === undefined ? false : point.isFavorite,
       },
     );
 
