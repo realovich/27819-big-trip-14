@@ -57,24 +57,17 @@ document.querySelector('.trip-main__event-add-btn').addEventListener(Evt.CLICK, 
   tripPresenter.createTask();
 });
 
-api.getPoints()
-  .then((points) => {
-    pointsModel.setPoints(UpdateType.INIT, points);
+Promise.all([api.getDestinations(), api.getOffers(), api.getPoints()])
+  .then(([destinations, offers, points]) => {
+    pointsModel.setDestinations(destinations);
+    pointsModel.setOffers(offers);
+    pointsModel.setPoints(points, UpdateType.INIT);
+
     render(tripNavigationElement, tripTabsComponent);
     tripTabsComponent.setMenuClickHandler(handleTripTabsClick);
     tripInfoPresenter.init();
     filterPresenter.init();
   })
   .catch(() => {
-    pointsModel.setPoints(UpdateType.INIT, []);
-  });
-
-api.getDestinations()
-  .then((destinations) => {
-    pointsModel.setDestinations(destinations);
-  });
-
-api.getOffers()
-  .then((offers) => {
-    pointsModel.setOffers(offers);
+    pointsModel.setPoints([], UpdateType.INIT);
   });

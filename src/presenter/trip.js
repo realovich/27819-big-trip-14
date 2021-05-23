@@ -17,8 +17,6 @@ export default class Trip {
     this._tripSectionContainer = tripSectionContainer;
     this._pointPresenter = {};
     this._currentSortType = SortType.DAY;
-    this._offers = this._pointsModel.getOffers();
-    this._destinations = this._pointsModel.getDestinations();
     this._isLoading = true;
     this._api = api;
 
@@ -60,7 +58,7 @@ export default class Trip {
   createTask() {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._pointNewPresenter.init(this._offers, this._destinations);
+    this._pointNewPresenter.init(this._pointsModel.getOffers(), this._pointsModel.getDestinations());
   }
 
   _getPoints() {
@@ -112,7 +110,7 @@ export default class Trip {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._pointPresenter[data.id].init(data,  this._offers, this._destinations);
+        this._pointPresenter[data.id].init(data, this._pointsModel.getOffers(), this._pointsModel.getDestinations());
         break;
       case UpdateType.MINOR:
         this._clearTripSection();
@@ -124,7 +122,7 @@ export default class Trip {
         break;
       case UpdateType.INIT:
         this._isLoading = false;
-        remove(this._loadingComponent);
+        this._clearTripSection();
         this._renderTripSection();
         break;
     }
@@ -154,7 +152,7 @@ export default class Trip {
 
   _renderPoint(point) {
     const pointPresenter = new PointPresenter(this._pointListComponent, this._handleViewAction, this._handleModeChange);
-    pointPresenter.init(point, this._offers, this._destinations);
+    pointPresenter.init(point, this._pointsModel.getOffers(), this._pointsModel.getDestinations());
     this._pointPresenter[point.id] = pointPresenter;
   }
 
@@ -197,6 +195,8 @@ export default class Trip {
     if (pointsCount === 0) {
       this._renderNoPoints();
       return;
+    } else {
+      remove(this._noPointComponent);
     }
 
     this._renderSort();

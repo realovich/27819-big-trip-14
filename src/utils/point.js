@@ -16,4 +16,7 @@ export const sortPointTime = (pointA, pointB) => {
   return durationB - durationA;
 };
 
-export const getOfferUid = (value) => `event-offer-${value}`;
+export const getOfferUid = (offer) => {
+  const offerUid = (offer.title.split(' ').join('') + offer.price).toLowerCase();
+  return `event-offer-${offerUid}`;
+};

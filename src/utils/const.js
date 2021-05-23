@@ -23,3 +23,5 @@ export const ChartSetting = {
   MIN_BAR_LENGTH: 50,
   BAR_HEIGHT: 55,
 };
+
+export const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];

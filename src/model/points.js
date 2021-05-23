@@ -24,7 +24,7 @@ export default class Points extends Observer {
     return this._destinations;
   }
 
-  setPoints(updateType ,points) {
+  setPoints(points, updateType) {
     this._points = points.slice();
 
     this._notify(updateType);

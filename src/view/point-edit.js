@@ -2,14 +2,15 @@ import SmartView from './smart';
 import {Evt} from '../utils/common';
 import {getOfferUid} from '../utils/point';
 import {formatDate} from '../utils/date';
+import { POINT_TYPES } from '../utils/const';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-const createPointEditTypesTemplate = (selectedType, offers) => {
-  return offers.map((offer) => `<div class="event__type-item">
-    <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}"${selectedType === offer.type ? ' checked' : ''}>
-    <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-1">${offer.type}</label>
+const createPointEditTypesTemplate = (selectedType) => {
+  return POINT_TYPES.map((type) => `<div class="event__type-item">
+    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}"${selectedType === type ? ' checked' : ''}>
+    <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type}</label>
   </div>`).join('');
 };
 
@@ -51,20 +52,26 @@ const createPointEditOffersTemplate = (availablePointOffers, pointOffers) => {
     return '';
   }
 
-  const createPointAddOffersListTemplate = availablePointOffers.offers.map((offer) => `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="${getOfferUid(offer.shortname)}" type="checkbox" name="${getOfferUid(offer.shortname)}" ${pointOffers.some((pointOffer) => pointOffer.shortname == offer.shortname) && 'checked'}>
-    <label class="event__offer-label" for="${getOfferUid(offer.shortname)}">
-      <span class="event__offer-title">${offer.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
-    </label>
-  </div>`).join('');
+  const createPointAddOffersListTemplate = (offers) => {
+    return offers.map((offer) => {
+      const offerUid = getOfferUid(offer);
+      const isOfferChecked = pointOffers.some((pointOffer) => pointOffer.title == offer.title);
+      return `<div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="${offerUid}" type="checkbox" name="${offerUid}" ${isOfferChecked && 'checked'}>
+        <label class="event__offer-label" for="${offerUid}">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${offer.price}</span>
+        </label>
+      </div>`;
+    }).join('');
+  };
 
   return `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
     <div class="event__available-offers">
-      ${createPointAddOffersListTemplate}
+      ${createPointAddOffersListTemplate(availablePointOffers)}
     </div>
   </section>`;
 };
@@ -86,7 +93,7 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations)
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
 
-              ${createPointEditTypesTemplate(type, availablePointOffers)}
+              ${createPointEditTypesTemplate(type)}
             </fieldset>
           </div>
         </div>
@@ -183,7 +190,11 @@ export default class PointEdit extends SmartView {
   }
 
   _setAvailablePointOffers(type) {
-    this._availablePointOffers = this._offers.find((item) => item.type === type);
+    const availablePointOffer = this._offers.find((item) => item.type === type);
+
+    if (availablePointOffer) {
+      this._availablePointOffers = availablePointOffer.offers;
+    }
   }
 
   _getDatepickerInstance(element, date, callback) {
@@ -244,17 +255,17 @@ export default class PointEdit extends SmartView {
     evt.preventDefault();
 
     const offerUid = evt.target.id;
-    const targetOfferIndex = this._data.offers.findIndex((item) => getOfferUid(item.shortname) === offerUid);
+    const targetOfferIndex = this._data.offers.findIndex((item) => getOfferUid(item) === offerUid);
     const pointOffers = this._data.offers.slice();
 
-    if (this._data.offers.some((pointOffer) => getOfferUid(pointOffer.shortname) === offerUid)) {
+    if (this._data.offers.some((pointOffer) => getOfferUid(pointOffer) === offerUid)) {
       pointOffers.splice(targetOfferIndex, 1);
 
       this.updateData({
         offers: pointOffers,
       });
     } else {
-      pointOffers.push(this._availablePointOffers.offers.find((item) => getOfferUid(item.shortname) === offerUid));
+      pointOffers.push(this._availablePointOffers.find((item) => getOfferUid(item) === offerUid));
 
       this.updateData({
         offers: pointOffers,
