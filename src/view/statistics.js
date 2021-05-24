@@ -96,38 +96,37 @@ const getChartData = (points) => {
     } else {
       const {basePrice: typeValueBasePrice, count, duration: typeValueDuration} = typeValue;
 
-      chartValues.set(type,
-        {
-          basePrice: (typeValueBasePrice + basePrice),
-          count: count + 1,
-          duration: typeValueDuration + duration,
-        });
+      chartValues.set(type, {
+        basePrice: (typeValueBasePrice + basePrice),
+        count: count + 1,
+        duration: typeValueDuration + duration,
+      });
     }
   });
 
   return chartValues;
 };
 
-const getSortedArray = (chartMap, fieldName) => {
+const getSortedData = (chartData, fieldName) => {
 
-  const sortedMap = [...chartMap.entries()].sort((first, second) => {
+  const sortData = [...chartData.entries()].sort((first, second) => {
     const firstValue = first[VALUE_POSITION];
     const secondValue = second[VALUE_POSITION];
     return secondValue[fieldName] - firstValue[fieldName];
   });
 
-  const sortedArray = sortedMap.reduce((acc, chartValue) => {
+  const convertSortedData = sortData.reduce((acc, chartValue) => {
     const [titles, values] = acc;
     const [title, value] = chartValue;
     return [[...titles, title.toUpperCase()], [...values, value[fieldName]]];
   }, [[], []]);
 
-  return sortedArray;
+  return convertSortedData;
 };
 
 const renderMoneyChart = (moneyCtx, chartData) => {
 
-  const [types, prices] = getSortedArray(chartData, 'basePrice');
+  const [types, prices] = getSortedData(chartData, 'basePrice');
 
   const priceFormatter = (val) => `€ ${val}`;
 
@@ -137,7 +136,7 @@ const renderMoneyChart = (moneyCtx, chartData) => {
 };
 
 const renderTypeChart = (typeCtx, chartData) => {
-  const [types, counts] = getSortedArray(chartData, 'count');
+  const [types, counts] = getSortedData(chartData, 'count');
 
   const countFormatter = (val) => `${val}x`;
 
@@ -147,7 +146,7 @@ const renderTypeChart = (typeCtx, chartData) => {
 };
 
 const renderTimeChart = (timeCtx, chartData) => {
-  const [types, durations] = getSortedArray(chartData, 'duration');
+  const [types, durations] = getSortedData(chartData, 'duration');
 
   const timeFormatter = (val) => formatDuration(val);
 
