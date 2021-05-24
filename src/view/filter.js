@@ -18,6 +18,7 @@ export default class Filter extends AbstractView {
     super();
     this._filters = filters;
     this._currentFilterType = currentFilterType;
+    this._filterInputs = this.getElement().querySelectorAll('input');
 
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
@@ -34,5 +35,17 @@ export default class Filter extends AbstractView {
   setFilterTypeChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
     this.getElement().addEventListener(Evt.CHANGE, this._filterTypeChangeHandler);
+  }
+
+  disableFilter() {
+    this._filterInputs.forEach((filterInput) => {
+      filterInput.setAttribute('disabled', 'disabled');
+    });
+  }
+
+  enableFilter() {
+    this._filterInputs.forEach((filterInput) => {
+      filterInput.removeAttribute('disabled');
+    });
   }
 }

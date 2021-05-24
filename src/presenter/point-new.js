@@ -14,9 +14,10 @@ const BLANK_POINT = {
 };
 
 export default class PointNew {
-  constructor(pointListContainer, changeData) {
+  constructor(pointListContainer, changeData, enablePointAddButton) {
     this._pointListContainer = pointListContainer;
     this._changeData = changeData;
+    this._enablePointAddButton = enablePointAddButton;
 
     this._pointEditComponent = null;
 
@@ -81,6 +82,7 @@ export default class PointNew {
 
   _handleCloseEditClick() {
     this.destroy();
+    this._enablePointAddButton();
   }
 
   _handleFormSubmit(point) {
@@ -89,5 +91,6 @@ export default class PointNew {
       UpdateType.MAJOR,
       point,
     );
+    this._enablePointAddButton();
   }
 }

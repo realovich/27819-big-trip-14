@@ -19,14 +19,12 @@ const pageHeaderElement = document.querySelector('.page-header');
 const tripNavigationElement = pageHeaderElement.querySelector('.trip-controls__navigation');
 const tripMainElement = pageHeaderElement.querySelector('.trip-main');
 const tripFiltersELement = pageHeaderElement.querySelector('.trip-controls__filters');
+const pageBodyContainerElement = pageMainElement.querySelector('.page-body__container');
 
 const pointsModel = new PointsModel();
-
 const filterModel = new FilterModel();
 
 const tripTabsComponent = new TripTabsView();
-
-const pageBodyContainerElement = pageMainElement.querySelector('.page-body__container');
 
 const tripInfoPresenter = new TripInfoPresenter(tripMainElement, pointsModel);
 const filterPresenter = new FilterPresenter(tripFiltersELement, filterModel);
@@ -40,22 +38,34 @@ const handleTripTabsClick = (menuItem) => {
       remove(statisticsComponent);
       tripTabsComponent.setMenuItem(MenuItem.TABLE);
       tripPresenter.init();
+      enablePointAddButton();
+      filterPresenter.enable();
       break;
     case MenuItem.STATS:
       tripPresenter.destroy();
       tripTabsComponent.setMenuItem(MenuItem.STATS);
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(pageBodyContainerElement, statisticsComponent);
+      disablePointAddButton();
+      filterPresenter.disable();
       break;
   }
 };
 
 tripPresenter.init();
 
-document.querySelector('.trip-main__event-add-btn').addEventListener(Evt.CLICK, (evt) => {
+const pointAddButton = pageHeaderElement.querySelector('.trip-main__event-add-btn');
+
+const disablePointAddButton = () => pointAddButton.setAttribute('disabled', 'disabled');
+const enablePointAddButton = () => pointAddButton.removeAttribute('disabled');
+
+const pointAddClickHandler = (evt) => {
   evt.preventDefault();
-  tripPresenter.createPoint();
-});
+  tripPresenter.createPoint(enablePointAddButton);
+  disablePointAddButton();
+};
+
+pointAddButton.addEventListener(Evt.CLICK, pointAddClickHandler);
 
 Promise.all([api.getDestinations(), api.getOffers(), api.getPoints()])
   .then(([destinations, offers, points]) => {
