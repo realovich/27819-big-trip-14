@@ -6,7 +6,7 @@ import TripInfoPresenter from './presenter/trip-info';
 import PointsModel from './model/points';
 import FilterModel from './model/filter';
 import {render, remove} from './utils/render';
-import {Evt, MenuItem, UpdateType} from './utils/const';
+import {Evt, MenuItem, UpdateType, FormControlState} from './utils/const';
 import Api from './api';
 
 const AUTHORIZATION = 'Basic re15ch21viTo40';
@@ -20,6 +20,7 @@ const tripNavigationElement = pageHeaderElement.querySelector('.trip-controls__n
 const tripMainElement = pageHeaderElement.querySelector('.trip-main');
 const tripFiltersELement = pageHeaderElement.querySelector('.trip-controls__filters');
 const pageBodyContainerElement = pageMainElement.querySelector('.page-body__container');
+const pointAddButtonElement = pageHeaderElement.querySelector('.trip-main__event-add-btn');
 
 const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
@@ -54,10 +55,8 @@ const handleTripTabsClick = (menuItem) => {
 
 tripPresenter.init();
 
-const pointAddButton = pageHeaderElement.querySelector('.trip-main__event-add-btn');
-
-const disablePointAddButton = () => pointAddButton.setAttribute('disabled', 'disabled');
-const enablePointAddButton = () => pointAddButton.removeAttribute('disabled');
+const disablePointAddButton = () => pointAddButtonElement.setAttribute(FormControlState.DISABLED, FormControlState.DISABLED);
+const enablePointAddButton = () => pointAddButtonElement.removeAttribute(FormControlState.DISABLED);
 
 const pointAddClickHandler = (evt) => {
   evt.preventDefault();
@@ -65,7 +64,7 @@ const pointAddClickHandler = (evt) => {
   disablePointAddButton();
 };
 
-pointAddButton.addEventListener(Evt.CLICK, pointAddClickHandler);
+pointAddButtonElement.addEventListener(Evt.CLICK, pointAddClickHandler);
 
 Promise.all([api.getDestinations(), api.getOffers(), api.getPoints()])
   .then(([destinations, offers, points]) => {

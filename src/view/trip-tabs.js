@@ -2,7 +2,7 @@ import AbstractView from './abstract';
 import {MenuItem, Evt} from '../utils/const';
 
 const createSiteTabsTemplate = () => {
-  return `<nav class="trip-controls__trip-tabs  trip-tabs">
+  return `<nav class="trip-controls__trip-tabs trip-tabs">
     <a class="trip-tabs__btn  trip-tabs__btn--active" data-item="${MenuItem.TABLE}" href="#">Table</a>
     <a class="trip-tabs__btn" data-item="${MenuItem.STATS}" href="#">Stats</a>
   </nav>`;

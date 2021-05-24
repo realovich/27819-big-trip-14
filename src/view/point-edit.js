@@ -1,14 +1,14 @@
 import SmartView from './smart';
 import {getOfferUid} from '../utils/point';
 import {formatDate} from '../utils/date';
-import {POINT_TYPES, Evt} from '../utils/const';
+import {POINT_TYPES, Evt, FormControlState} from '../utils/const';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createPointEditTypesTemplate = (selectedType, isDisabled) => {
   return POINT_TYPES.map((type) => `<div class="event__type-item">
-    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}"${selectedType === type ? ' checked' : ''} ${isDisabled ? 'disabled' : ''}>
+    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}"${selectedType === type ? ' checked' : ''} ${isDisabled ? FormControlState.DISABLED : ''}>
     <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type}</label>
   </div>`).join('');
 };
@@ -56,7 +56,7 @@ const createPointEditOffersTemplate = (availablePointOffers, pointOffers, isDisa
       const offerUid = getOfferUid(offer);
       const isOfferChecked = pointOffers.some((pointOffer) => pointOffer.title === offer.title);
       return `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="${offerUid}" type="checkbox" name="${offerUid}" ${isOfferChecked ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
+        <input class="event__offer-checkbox  visually-hidden" id="${offerUid}" type="checkbox" name="${offerUid}" ${isOfferChecked ? 'checked' : ''} ${isDisabled ? FormControlState.DISABLED : ''}>
         <label class="event__offer-label" for="${offerUid}">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
@@ -111,7 +111,7 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations)
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination ? destination.name : ''}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}>
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination ? destination.name : ''}" list="destination-list-1" ${isDisabled ? FormControlState.DISABLED : ''}>
           <datalist id="destination-list-1">
             ${createPointEditDestinationListTemplate(destinations)}
           </datalist>
@@ -119,10 +119,10 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations)
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(dateFrom, 'DD/MM/YY HH:mm')}" ${isDisabled ? 'disabled' : ''}>
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(dateFrom, 'DD/MM/YY HH:mm')}" ${isDisabled ? FormControlState.DISABLED : ''}>
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(dateTo, 'DD/MM/YY HH:mm')}" ${isDisabled ? 'disabled' : ''}>
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(dateTo, 'DD/MM/YY HH:mm')}" ${isDisabled ? FormControlState.DISABLED : ''}>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -133,10 +133,10 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations)
           <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="1" value="${basePrice}">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? FormControlState.DISABLED : ''}>
           ${isSaving ? 'Saving...' : 'Save'}
         </button>
-        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? FormControlState.DISABLED : ''}>
           ${isDeleting ? 'Deleting...' : 'Delete'}
         </button>
         <button class="event__rollup-btn" type="button">

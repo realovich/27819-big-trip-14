@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {Evt} from '../utils/const';
+import {Evt, FormControlState} from '../utils/const';
 
 const sortData = [
   {inputName: 'sort-day', label: 'day'},
@@ -12,7 +12,7 @@ const sortData = [
 const createSortTemplate = (currentSortType) => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       ${sortData.map(({label, inputName, isDisabled}) => `<div class="trip-sort__item  trip-sort__item--${label}">
-      <input id="${inputName}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="${inputName}"${isDisabled ? ' disabled' : ''}${inputName === currentSortType ? ' checked' : ''}>
+      <input id="${inputName}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="${inputName}" ${isDisabled ? FormControlState.DISABLED : ''} ${inputName === currentSortType ? FormControlState.CHECKED : ''}>
       <label class="trip-sort__btn" for="${inputName}">${label}</label>
     </div>`).join('')}
   </form>`;
