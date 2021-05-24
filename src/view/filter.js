@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {Evt} from '../utils/common';
+import {Evt} from '../utils/const';
 
 const createFilterTemplate = (filters, currentFilterType) => {
 

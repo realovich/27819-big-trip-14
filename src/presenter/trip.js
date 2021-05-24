@@ -3,12 +3,12 @@ import SortView from '../view/sort';
 import PointListView from '../view/point-list';
 import NoPointView from '../view/no-point';
 import LoadingView from '../view/loading';
-import {filter} from '../utils/filter';
-import {remove, render} from '../utils/render';
-import {UpdateType, UserAction, FilterType, State} from '../utils/common.js';
-import {SortType, sortPointDay, sortPointPrice, sortPointTime} from '../utils/point';
 import PointPresenter from './point';
 import PointNewPresenter from './point-new';
+import {filter} from '../utils/filter';
+import {remove, render} from '../utils/render';
+import {UpdateType, UserAction, FilterType, State} from '../utils/const';
+import {SortType, sortPointDay, sortPointPrice, sortPointTime} from '../utils/point';
 
 export default class Trip {
   constructor (tripSectionContainer, pointsModel, filterModel, api) {

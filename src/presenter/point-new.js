@@ -1,7 +1,7 @@
 import PointEditView from '../view/point-edit';
-import {render, remove, RenderPlace} from '../utils/render';
+import {render, remove} from '../utils/render';
 import {getCurrentDate} from '../utils/date';
-import {Key, Evt, UserAction, UpdateType} from '../utils/common';
+import {Key, Evt, UserAction, UpdateType, RenderPlace} from '../utils/const';
 
 const BLANK_POINT = {
   basePrice: '',

@@ -1,4 +1,5 @@
-import { remove, render, RenderPlace, replace } from '../utils/render';
+import { RenderPlace } from '../utils/const';
+import { remove, render, replace } from '../utils/render';
 import TripInfoView from '../view/trip-info';
 
 export default class TripInfo {

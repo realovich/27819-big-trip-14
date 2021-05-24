@@ -1,7 +1,7 @@
 import PointView from '../view/point';
 import PointEditView from '../view/point-edit';
 import {render, replace, remove} from '../utils/render';
-import {Key, Evt, UserAction, UpdateType, State} from '../utils/common';
+import {Key, Evt, UserAction, UpdateType, State} from '../utils/const';
 import {isDatesEqual} from '../utils/date';
 
 const Mode = {

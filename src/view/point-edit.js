@@ -1,8 +1,7 @@
 import SmartView from './smart';
-import {Evt} from '../utils/common';
 import {getOfferUid} from '../utils/point';
 import {formatDate} from '../utils/date';
-import { POINT_TYPES } from '../utils/const';
+import { POINT_TYPES, Evt } from '../utils/const';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';

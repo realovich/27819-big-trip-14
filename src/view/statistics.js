@@ -1,8 +1,8 @@
 import AbstractView from './abstract';
-import Chart from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {ChartSetting} from '../utils/const';
 import {formatDuration} from '../utils/date';
+import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const VALUE_POSITION = 1;
 

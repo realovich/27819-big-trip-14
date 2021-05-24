@@ -1,12 +1,12 @@
 import TripTabsView from './view/trip-tabs';
 import StatisticsView from './view/statistics';
-import {render, remove} from './utils/render';
 import TripPresenter from './presenter/trip';
 import FilterPresenter from './presenter/filter';
 import TripInfoPresenter from './presenter/trip-info';
 import PointsModel from './model/points';
 import FilterModel from './model/filter';
-import { Evt, MenuItem, UpdateType } from './utils/common';
+import {render, remove} from './utils/render';
+import { Evt, MenuItem, UpdateType } from './utils/const';
 import Api from './api';
 
 const AUTHORIZATION = 'Basic re15ch21viTo40';

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {FilterType} from './common';
+import {FilterType} from './const';
 
 const currentDate = dayjs();
 const isCurrentDay = (dayA, dayB) => currentDate.isAfter(dayA, 'D') && currentDate.isBefore(dayB, 'D');

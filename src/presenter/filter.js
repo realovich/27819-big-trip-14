@@ -1,6 +1,6 @@
 import FilterView from '../view/filter';
 import {render, replace, remove} from '../utils/render';
-import {FilterType, UpdateType} from '../utils/common';
+import {FilterType, UpdateType} from '../utils/const';
 
 export default class Filter {
   constructor(filterContainer, filterModel) {

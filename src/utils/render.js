@@ -1,11 +1,5 @@
 import Abstract from '../view/abstract';
-
-export const RenderPlace = {
-  BEFOREBEGIN: 'beforebegin',
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-  AFTEREND: 'afterend',
-};
+import {RenderPlace} from './const';
 
 export const render = (container, child, place = RenderPlace.BEFOREEND) => {
   if (container instanceof Abstract) {
