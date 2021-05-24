@@ -6,7 +6,7 @@ import TripInfoPresenter from './presenter/trip-info';
 import PointsModel from './model/points';
 import FilterModel from './model/filter';
 import {render, remove} from './utils/render';
-import { Evt, MenuItem, UpdateType } from './utils/const';
+import {Evt, MenuItem, UpdateType} from './utils/const';
 import Api from './api';
 
 const AUTHORIZATION = 'Basic re15ch21viTo40';
