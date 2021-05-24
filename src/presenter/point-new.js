@@ -74,7 +74,7 @@ export default class PointNew {
   }
 
   _escKeyDownHandler(evt) {
-    if (evt.key === Key.ESCAPE || evt.key == Key.ESC) {
+    if (evt.key === Key.ESCAPE || evt.key === Key.ESC) {
       evt.preventDefault();
       this.destroy();
     }

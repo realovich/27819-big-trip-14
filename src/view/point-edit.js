@@ -54,7 +54,7 @@ const createPointEditOffersTemplate = (availablePointOffers, pointOffers, isDisa
   const createPointAddOffersListTemplate = (offers) => {
     return offers.map((offer) => {
       const offerUid = getOfferUid(offer);
-      const isOfferChecked = pointOffers.some((pointOffer) => pointOffer.title == offer.title);
+      const isOfferChecked = pointOffers.some((pointOffer) => pointOffer.title === offer.title);
       return `<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="${offerUid}" type="checkbox" name="${offerUid}" ${isOfferChecked ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
         <label class="event__offer-label" for="${offerUid}">
