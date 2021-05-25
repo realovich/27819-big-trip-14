@@ -1,41 +1,30 @@
 import PointEditView from '../view/point-edit';
 import {render, remove} from '../utils/render';
-import {getCurrentDate} from '../utils/date';
 import {Key, Evt, UserAction, UpdateType, RenderPlace} from '../utils/const';
 
-const BLANK_POINT = {
-  basePrice: '',
-  dateFrom: getCurrentDate(),
-  dateTo: getCurrentDate(),
-  destination: null,
-  type: 'taxi',
-  offers: [],
-  isFavorite: false,
-};
-
 export default class PointNew {
-  constructor(pointListContainer, changeData, enablePointAddButton) {
+  constructor(pointListContainer, changeData) {
     this._pointListContainer = pointListContainer;
     this._changeData = changeData;
-    this._enablePointAddButton = enablePointAddButton;
 
     this._pointEditComponent = null;
 
-    this._handleCloseEditClick = this._handleCloseEditClick.bind(this);
+    this._handleCancelClick = this._handleCancelClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(offers, destinations) {
+  init(offers, destinations, enablePointAddButton) {
     if (this._pointEditComponent !== null) {
       return;
     }
 
     this._offers = offers;
     this._destinations = destinations;
+    this._enablePointAddButton = enablePointAddButton;
 
-    this._pointEditComponent = new PointEditView(BLANK_POINT, this._offers, this._destinations);
-    this._pointEditComponent.setCloseEditClickHandler(this._handleCloseEditClick);
+    this._pointEditComponent = new PointEditView(this._offers, this._destinations);
+    this._pointEditComponent.setCancelClickHandler(this._handleCancelClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     render(this._pointListContainer, this._pointEditComponent, RenderPlace.AFTERBEGIN);
@@ -77,10 +66,11 @@ export default class PointNew {
     if (evt.key === Key.ESCAPE || evt.key === Key.ESC) {
       evt.preventDefault();
       this.destroy();
+      this._enablePointAddButton();
     }
   }
 
-  _handleCloseEditClick() {
+  _handleCancelClick() {
     this.destroy();
     this._enablePointAddButton();
   }

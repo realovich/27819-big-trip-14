@@ -1,10 +1,20 @@
 import SmartView from './smart';
 import {getOfferUid} from '../utils/point';
-import {formatDate} from '../utils/date';
+import {formatDate, getCurrentDate} from '../utils/date';
 import {POINT_TYPES, Evt, FormControlState} from '../utils/const';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+
+const BLANK_POINT = {
+  basePrice: '',
+  dateFrom: getCurrentDate(),
+  dateTo: getCurrentDate(),
+  destination: null,
+  type: 'taxi',
+  offers: [],
+  isFavorite: false,
+};
 
 const createPointEditTypesTemplate = (selectedType, isDisabled) => {
   return POINT_TYPES.map((type) => `<div class="event__type-item">
@@ -47,7 +57,7 @@ const createPointEditDestinationSectionTemplate = (destination) => {
 };
 
 const createPointEditOffersTemplate = (availablePointOffers, pointOffers, isDisabled) => {
-  if (!availablePointOffers) {
+  if (availablePointOffers.length === 0) {
     return '';
   }
 
@@ -55,6 +65,7 @@ const createPointEditOffersTemplate = (availablePointOffers, pointOffers, isDisa
     return offers.map((offer) => {
       const offerUid = getOfferUid(offer);
       const isOfferChecked = pointOffers.some((pointOffer) => pointOffer.title === offer.title);
+
       return `<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="${offerUid}" type="checkbox" name="${offerUid}" ${isOfferChecked ? 'checked' : ''} ${isDisabled ? FormControlState.DISABLED : ''}>
         <label class="event__offer-label" for="${offerUid}">
@@ -75,7 +86,7 @@ const createPointEditOffersTemplate = (availablePointOffers, pointOffers, isDisa
   </section>`;
 };
 
-const createPointEditTemplate = (point = {}, availablePointOffers, destinations) => {
+const createPointEditTemplate = (point = {}, availablePointOffers, destinations, isEditMode) => {
   const {
     basePrice,
     dateFrom,
@@ -87,6 +98,10 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations)
     isSaving,
     isDeleting,
   } = point;
+
+  const rollUpButton = `<button class="event__rollup-btn" type="button">
+    <span class="visually-hidden">Open event</span>
+  </button>`;
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -102,7 +117,7 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations)
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
 
-              ${createPointEditTypesTemplate(type)}
+              ${createPointEditTypesTemplate(type, isDisabled)}
             </fieldset>
           </div>
         </div>
@@ -137,14 +152,12 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations)
           ${isSaving ? 'Saving...' : 'Save'}
         </button>
         <button class="event__reset-btn" type="reset" ${isDisabled ? FormControlState.DISABLED : ''}>
-          ${isDeleting ? 'Deleting...' : 'Delete'}
+          ${!isEditMode ? 'Cancel' : (isEditMode && isDeleting ? 'Deleting...' : 'Delete')}
         </button>
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
+        ${isEditMode ? rollUpButton : ''}
       </header>
       <section class="event__details">
-        ${createPointEditOffersTemplate(availablePointOffers, offers)}
+        ${createPointEditOffersTemplate(availablePointOffers, offers, isDisabled)}
 
         ${createPointEditDestinationSectionTemplate(destination)}
       </section>
@@ -153,9 +166,10 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations)
 };
 
 export default class PointEdit extends SmartView {
-  constructor(point, offers, destinations) {
+  constructor(offers, destinations, point = null) {
     super();
-    this._data = PointEdit.parsePointToData(point);
+    this._data = PointEdit.parsePointToData(point || BLANK_POINT);
+    this._isEditMode = point !== null;
     this._offers = offers;
     this._destinations = destinations;
     this._dateFromPicker = null;
@@ -179,7 +193,7 @@ export default class PointEdit extends SmartView {
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._data, this._availablePointOffers, this._destinations);
+    return createPointEditTemplate(this._data, this._availablePointOffers, this._destinations, this._isEditMode);
   }
 
   removeElement() {
@@ -199,6 +213,7 @@ export default class PointEdit extends SmartView {
     this._initDateToInstance();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setCloseEditClickHandler(this._callback.closeEditClick);
+    this.setCancelClickHandler(this._callback.cancelClick);
     this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
@@ -346,6 +361,11 @@ export default class PointEdit extends SmartView {
   setDeleteClickHandler(callback) {
     this._callback.deleteClick = callback;
     this.getElement().querySelector('.event__reset-btn').addEventListener(Evt.CLICK, this._formDeleteClickHandler);
+  }
+
+  setCancelClickHandler(callback) {
+    this._callback.closeEditClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener(Evt.CLICK, this._closeEditClickHandler);
   }
 
   static parsePointToData(point) {
