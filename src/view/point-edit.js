@@ -343,6 +343,11 @@ export default class PointEdit extends SmartView {
     this._callback.closeEditClick();
   }
 
+  _formCancelClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.cancelClick();
+  }
+
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
     this._callback.deleteClick(PointEdit.parseDataToPoint(this._data));
@@ -360,7 +365,7 @@ export default class PointEdit extends SmartView {
 
   setCancelClickHandler(callback) {
     this._callback.closeEditClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener(Evt.CLICK, this._closeEditClickHandler);
+    this.getElement().querySelector('.event__reset-btn').addEventListener(Evt.CLICK, this._formCancelClickHandler);
   }
 
   setCloseEditClickHandler(callback) {
