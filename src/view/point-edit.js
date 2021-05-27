@@ -177,6 +177,7 @@ export default class PointEdit extends SmartView {
     this._availablePointOffers = [];
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formCancelClickHandler = this._formCancelClickHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._closeEditClickHandler = this._closeEditClickHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
@@ -358,17 +359,29 @@ export default class PointEdit extends SmartView {
     this.getElement().querySelector('form').addEventListener(Evt.SUBMIT, this._formSubmitHandler);
   }
 
+  setCancelClickHandler(callback) {
+    if (this._isEditMode) {
+      return;
+    }
+
+    this._callback.cancelClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener(Evt.CLICK, this._formCancelClickHandler);
+  }
+
   setDeleteClickHandler(callback) {
+    if (!this._isEditMode) {
+      return;
+    }
+
     this._callback.deleteClick = callback;
     this.getElement().querySelector('.event__reset-btn').addEventListener(Evt.CLICK, this._formDeleteClickHandler);
   }
 
-  setCancelClickHandler(callback) {
-    this._callback.closeEditClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener(Evt.CLICK, this._formCancelClickHandler);
-  }
-
   setCloseEditClickHandler(callback) {
+    if (!this._isEditMode) {
+      return;
+    }
+
     this._callback.closeEditClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener(Evt.CLICK, this._closeEditClickHandler);
   }
