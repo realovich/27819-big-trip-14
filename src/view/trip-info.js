@@ -9,7 +9,10 @@ const generateTitleTripDestinations = (allTripDestinations) => {
     return allTripDestinations.join(' &mdash; ');
   }
 
-  return `${allTripDestinations[0]} &mdash; ... &mdash; ${allTripDestinations[allTripDestinations.length - 1]}`;
+  const [firstDestination] = allTripDestinations;
+  const lastDestination = allTripDestinations[allTripDestinations.length - 1];
+
+  return `${firstDestination} &mdash; ... &mdash; ${lastDestination}`;
 };
 
 const createTripInfoTemplate = (points) => {
@@ -32,12 +35,14 @@ const createTripInfoTemplate = (points) => {
   allTripDates.sort(sortDates);
 
   const allTripDestinations = [...new Set(points.map((point) => point.destination.name))];
+  const startTripDate = formatDate(allTripDates[0], 'MMM DD');
+  const endTripDate = formatDate(allTripDates[allTripDates.length - 1], 'MMM DD');
 
   return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
       <h1 class="trip-info__title">${generateTitleTripDestinations(allTripDestinations)}</h1>
 
-      <p class="trip-info__dates">${formatDate(allTripDates[0], 'MMM DD')}&nbsp;&mdash;&nbsp;${formatDate(allTripDates[allTripDates.length - 1], 'MMM DD')}</p>
+      <p class="trip-info__dates">${startTripDate}&nbsp;&mdash;&nbsp;${endTripDate}</p>
     </div>
 
     <p class="trip-info__cost">

@@ -10,6 +10,8 @@ import {remove, render} from '../utils/render';
 import {UpdateType, UserAction, FilterType, State} from '../utils/const';
 import {SortType, sortPointDay, sortPointPrice, sortPointTime} from '../utils/point';
 
+const ZERO_POINTS = 0;
+
 export default class Trip {
   constructor (tripSectionContainer, pointsModel, filterModel, api) {
     this._pointsModel = pointsModel;
@@ -100,13 +102,13 @@ export default class Trip {
           });
         break;
       case UserAction.ADD_POINT:
-        this._pointNewPresenter.setSaving();
+        this._pointNewPresenter.setViewState(State.SAVING);
         this._api.addPoint(updatedItem)
           .then((response) => {
             this._pointsModel.addPoint(updateType, response);
           })
           .catch(() => {
-            this._pointNewPresenter.setAborting();
+            this._pointNewPresenter.setViewState(State.ABORTING);
           });
         break;
       case UserAction.DELETE_POINT:
@@ -207,7 +209,7 @@ export default class Trip {
     const points = this._getPoints();
     const pointsCount = points.length;
 
-    if (pointsCount === 0) {
+    if (pointsCount === ZERO_POINTS) {
       this._renderNoPoints();
       return;
     } else {

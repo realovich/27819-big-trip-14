@@ -152,7 +152,7 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations,
           ${isSaving ? 'Saving...' : 'Save'}
         </button>
         <button class="event__reset-btn" type="reset" ${isDisabled ? FormControlState.DISABLED : ''}>
-          ${!isEditMode ? 'Cancel' : (isEditMode && isDeleting ? 'Deleting...' : 'Delete')}
+          ${isEditMode ? (isEditMode && isDeleting ? 'Deleting...' : 'Delete') : 'Cancel'}
         </button>
         ${isEditMode ? rollUpButton : ''}
       </header>
@@ -353,11 +353,6 @@ export default class PointEdit extends SmartView {
     this.getElement().querySelector('form').addEventListener(Evt.SUBMIT, this._formSubmitHandler);
   }
 
-  setCloseEditClickHandler(callback) {
-    this._callback.closeEditClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener(Evt.CLICK, this._closeEditClickHandler);
-  }
-
   setDeleteClickHandler(callback) {
     this._callback.deleteClick = callback;
     this.getElement().querySelector('.event__reset-btn').addEventListener(Evt.CLICK, this._formDeleteClickHandler);
@@ -366,6 +361,11 @@ export default class PointEdit extends SmartView {
   setCancelClickHandler(callback) {
     this._callback.closeEditClick = callback;
     this.getElement().querySelector('.event__reset-btn').addEventListener(Evt.CLICK, this._closeEditClickHandler);
+  }
+
+  setCloseEditClickHandler(callback) {
+    this._callback.closeEditClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener(Evt.CLICK, this._closeEditClickHandler);
   }
 
   static parsePointToData(point) {

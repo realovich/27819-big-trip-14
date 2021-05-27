@@ -2,8 +2,10 @@ import AbstractView from './abstract';
 import {Evt} from '../utils/const';
 import {formatDuration, formatDate} from '../utils/date';
 
+const ZERO_OFFERS = 0;
+
 const createOffersListTemplate = (offers) => {
-  if (offers.length === 0) {
+  if (offers.length === ZERO_OFFERS) {
     return '';
   }
 

@@ -39,6 +39,10 @@ export default class Filter {
     this._filterComponent.enableFilter();
   }
 
+  setCallback(callback) {
+    this._filterComponent.getCallback(callback);
+  }
+
   _handleModelEvent() {
     this.init();
   }

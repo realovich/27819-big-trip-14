@@ -61,6 +61,7 @@ const enablePointAddButton = () => pointAddButtonElement.removeAttribute(FormCon
 const pointAddClickHandler = (evt) => {
   evt.preventDefault();
   tripPresenter.createPoint(enablePointAddButton);
+  filterPresenter.setCallback(enablePointAddButton);
   disablePointAddButton();
 };
 

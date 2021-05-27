@@ -1,6 +1,6 @@
 import PointEditView from '../view/point-edit';
 import {render, remove} from '../utils/render';
-import {Key, Evt, UserAction, UpdateType, RenderPlace} from '../utils/const';
+import {Key, Evt, UserAction, UpdateType, RenderPlace, State} from '../utils/const';
 
 export default class PointNew {
   constructor(pointListContainer, changeData) {
@@ -43,14 +43,7 @@ export default class PointNew {
     document.removeEventListener(Evt.KEYDOWN, this._escKeyDownHandler);
   }
 
-  setSaving() {
-    this._pointEditComponent.updateData({
-      isDisabled: true,
-      isSaving: true,
-    });
-  }
-
-  setAborting() {
+  setViewState(state) {
     const resetFormState = () => {
       this._pointEditComponent.updateData({
         isDisabled: false,
@@ -59,7 +52,17 @@ export default class PointNew {
       });
     };
 
-    this._pointEditComponent.shake(resetFormState);
+    switch (state) {
+      case State.SAVING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.ABORTING:
+        this._pointEditComponent.shake(resetFormState);
+        break;
+    }
   }
 
   _escKeyDownHandler(evt) {
