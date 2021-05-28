@@ -126,7 +126,7 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations,
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination ? destination.name : ''}" list="destination-list-1" ${isDisabled ? FormControlState.DISABLED : ''}>
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination ? destination.name : ''}" list="destination-list-1" required ${isDisabled ? FormControlState.DISABLED : ''}>
           <datalist id="destination-list-1">
             ${createPointEditDestinationListTemplate(destinations)}
           </datalist>
@@ -145,7 +145,7 @@ const createPointEditTemplate = (point = {}, availablePointOffers, destinations,
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="1" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="0" value="${basePrice}" required>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? FormControlState.DISABLED : ''}>
@@ -320,12 +320,16 @@ export default class PointEdit extends SmartView {
     this.updateData({
       dateFrom: userDate,
     });
+
+    this._dateToPicker.set('minDate', userDate);
   }
 
   _dateToChangeHandler([userDate]) {
     this.updateData({
       dateTo: userDate,
     });
+
+    this._dateFromPicker.set('maxDate', userDate);
   }
 
   _priceChangeHandler(evt) {
