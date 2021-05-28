@@ -324,13 +324,11 @@ export default class PointEdit extends SmartView {
       {
         dateFrom: userDate,
       },
-      true,
     );
 
     this._dateToPicker.set('minDate', userDate);
-    this._dateToPicker.set('minTime', userDate);
 
-    if (this._dateToCurrent <= userDate) {
+    if (userDate > this._dateToCurrent) {
       this._dateToPicker.setDate(userDate);
       this._dateToCurrent = userDate;
 
@@ -338,24 +336,20 @@ export default class PointEdit extends SmartView {
         {
           dateTo: userDate,
         },
-        true,
       );
     }
   }
 
   _dateToChangeHandler([userDate]) {
-
     this.updateData(
       {
         dateTo: userDate,
       },
-      true,
     );
 
     this._dateFromPicker.set('maxDate', userDate);
-    this._dateFromPicker.set('maxTime', userDate);
 
-    if (this._dateFromCurrent >= userDate) {
+    if (userDate < this._dateFromCurrent) {
       this._dateFromPicker.setDate(userDate);
       this._dateFromCurrent = userDate;
 
@@ -363,7 +357,6 @@ export default class PointEdit extends SmartView {
         {
           dateFrom: userDate,
         },
-        true,
       );
     }
   }
