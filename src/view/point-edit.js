@@ -174,6 +174,7 @@ export default class PointEdit extends SmartView {
     this._destinations = destinations;
     this._dateFromPicker = null;
     this._dateToPicker = null;
+    this._dateState = this._data.dateTo;
     this._availablePointOffers = [];
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -231,6 +232,7 @@ export default class PointEdit extends SmartView {
       this.getElement().querySelector(element),
       {
         enableTime: true,
+        'time_24hr': true,
         dateFormat: 'd/m/y H:i',
         defaultDate: date,
         onChange: callback,
@@ -317,19 +319,41 @@ export default class PointEdit extends SmartView {
   }
 
   _dateFromChangeHandler([userDate]) {
-    this.updateData({
-      dateFrom: userDate,
-    });
+    this.updateData(
+      {
+        dateFrom: userDate,
+      },
+      true,
+    );
 
     this._dateToPicker.set('minDate', userDate);
+    this._dateToPicker.set('minTime', userDate);
+
+    if (this._dateState <= userDate || !this._dateState) {
+      this._dateToPicker.setDate(userDate);
+      this._dateState = userDate;
+
+      this.updateData(
+        {
+          dateTo: userDate,
+        },
+        true,
+      );
+    }
   }
 
   _dateToChangeHandler([userDate]) {
-    this.updateData({
-      dateTo: userDate,
-    });
+    this._dateState = userDate;
+
+    this.updateData(
+      {
+        dateTo: userDate,
+      },
+      true,
+    );
 
     this._dateFromPicker.set('maxDate', userDate);
+    this._dateFromPicker.set('maxTime', userDate);
   }
 
   _priceChangeHandler(evt) {
